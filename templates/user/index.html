@@ -29,21 +29,21 @@
                 <td><label class="text-field">Acesso</label></td>
             </tr>
             {% if is_admin %}
-                {% for id, email, password in usuarios %}
-                    {% include '/usuario/update.html'%}                 
+                {% for id, email, password in users %}
+                    {% include '/user/update.html'%}                 
                 {% endfor %}
             {% else %}
                 {% set id = current_user_id %}
                 {% set email = current_user_email %}
                 {% set password = 'current_user_password' %}
-                {% include '/usuario/update.html'%}  
+                {% include '/user/update.html'%}  
             {% endif %}  
         </table>
     </div>
     
 
     {% if is_admin %}
-        {% include '/usuario/create.html' %}
+        {% include '/user/create.html' %}
     {% endif %}  
  
 </body>
