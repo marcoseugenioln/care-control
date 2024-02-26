@@ -1,5 +1,5 @@
 -- usuario definition
-CREATE TABLE IF NOT EXISTS usuario (
+CREATE TABLE IF NOT EXISTS user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	email TEXT(300),
 	password TEXT(64),
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 --#          DADOS DE "REAIS" PARA PRODUÇÃO              #
 --########################################################
 
-INSERT OR IGNORE INTO usuario (email, password, is_admin) VALUES 
+INSERT OR IGNORE INTO user (email, password, is_admin) VALUES 
 ('root@root.com', 'root', 1),
 ('marcos@root.com', 'root', 1),
 ('castilho@root.com', 'root', 1),

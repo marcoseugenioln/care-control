@@ -82,21 +82,21 @@ def register():
     
     return render_template('auth/register.html', logged_in = is_logged)
 
-@app.route('/usuario', methods=['GET', 'POST'])
-def usuario():
+@app.route('/user', methods=['GET', 'POST'])
+def user():
     
     return render_template(
-        'usuario/index.html', 
+        'user/index.html', 
         get_admin=database.get_admin, 
-        usuarios = database.get_users(), 
+        users = database.get_users(), 
         current_user_id = session['user_id'],
         current_user_email = database.get_user_email(session['user_id']),
         current_user_password = database.get_user_password(session['user_id']),
         is_admin = session['is_admin']
         )
 
-@app.route('/usuario/create', methods=['GET', 'POST'])
-def create_usuario():
+@app.route('/user/create', methods=['GET', 'POST'])
+def create_user():
     
     if (request.method == 'POST' and 'email' in request.form and 'new_password' in request.form ):
         
@@ -110,12 +110,12 @@ def create_usuario():
 
         if database.insert_user(email, new_password, is_admin):
             if 'user_id' in session:
-                return redirect(url_for('usuario'))
+                return redirect(url_for('user'))
 
         return redirect('/login')
 
-@app.route('/usuario/update/<id>', methods=['GET', 'POST'])
-def update_usuario(id):
+@app.route('/user/update/<id>', methods=['GET', 'POST'])
+def update_user(id):
     if (request.method == 'POST' and 'email' in request.form and 'new_password' in request.form and 'is_admin' in request.form):
         
         email = request.form['email']
@@ -123,14 +123,14 @@ def update_usuario(id):
         is_admin = request.form['is_admin']
 
         database.update_user(id, email, new_password, is_admin)
-        return redirect(url_for('usuario'))  
+        return redirect(url_for('user'))  
         
-    return redirect(url_for('usuario'))
+    return redirect(url_for('user'))
 
-@app.route('/usuario/delete/<id>', methods=['GET', 'POST'])
+@app.route('/user/delete/<id>', methods=['GET', 'POST'])
 def delete_user(id):
     database.delete_user(id)
-    return redirect(url_for('usuario'))
+    return redirect(url_for('user'))
 
 
 if __name__ == '__main__':
