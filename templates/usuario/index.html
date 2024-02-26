@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    {% if is_admin %}
+        <title>Usuários</title>
+    {% else %}
+        <title>Usuário</title>
+    {% endif %}
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+
+    <div class="index-div">
+        {% if is_admin %}
+            <h1>Usuários</h1>
+        {% else %}
+            <h1>Usuário</h1>
+        {% endif %}
+        
+
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Email</label></td>
+                <td><label class="text-field">Senha</label></td>
+                <td><label class="text-field">Acesso</label></td>
+            </tr>
+            {% if is_admin %}
+                {% for id, email, password in usuarios %}
+                    {% include '/usuario/update.html'%}                 
+                {% endfor %}
+            {% else %}
+                {% set id = current_user_id %}
+                {% set email = current_user_email %}
+                {% set password = 'current_user_password' %}
+                {% include '/usuario/update.html'%}  
+            {% endif %}  
+        </table>
+    </div>
+    
+
+    {% if is_admin %}
+        {% include '/usuario/create.html' %}
+    {% endif %}  
+ 
+</body>
+ 
+</html>

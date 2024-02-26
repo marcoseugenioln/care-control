@@ -1,0 +1,42 @@
+<html>  
+    <head> 
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+        <title> Login </title> 
+    </head>
+
+    <body>
+
+        <div class="centralized-div">
+
+            <h1>LOGIN</h1>
+
+            {% if not is_login_valid %}
+                <p class="error-message"> Login inválido </p>
+            {% endif %}
+
+            {% if user_registered %}
+                <p class="success-message"> Usuário registrado </p>
+            {% endif %}
+
+            <form method="POST">
+                
+                Email:<br>
+                <input type="text" name="email" class="text-field"/><br><br>
+
+                Senha:<br>
+                <input type="password" name="password" class="text-field"/><br><br>
+
+                <input type="checkbox" name="lembrar-me" value="lembrar-me">Lembrar-me</input><br><br>
+                <input type="submit" class="btn" value="Entrar"/><br>
+
+            </form>
+
+    
+            <form action="/register" method="POST">
+                <td><input type="submit" class="btn" value="Registrar-se"></td>
+            </form> 
+
+        </div>  
+    </body>
+
+</html>

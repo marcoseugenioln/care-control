@@ -1,0 +1,14 @@
+<div class="header-div">
+    <form method="get" action="{{ url_for('index') }}">
+        <button class="header-btn">
+            <img src="{{ url_for('static', filename='image/home-page-icon.png')}}" class="header-btn-img">
+        </button>
+    </form>
+    
+    <form method="get" action="{{ url_for('logout') }}">
+        <button class="header-btn">
+            <img src="{{ url_for('static', filename='image/logout-icon.png')}}" class="header-btn-img" id="logout-img">
+        </button>
+    </form>
+</div>
+<hr>

@@ -1,0 +1,16 @@
+<tr>
+    <td><label class="text-field">ID</label></td>
+    <td><label class="text-field">Material</label></td>
+    <td><label class="text-field">Quantidade</label></td>
+    <td><label class="text-field">Valor (R$)</label></td>
+</tr>
+
+{% for item_id, item_material_id, item_quantidade in closed_order_items%}
+    <tr>
+        <td><label class="text-field">{{ item_id }}</label></td>
+        <td><label class="text-field">{{ get_material_name(item_material_id) }}</label></td>
+        <td><label class="text-field">{{ item_quantidade }}</label></td>
+        <td><label class="text-field">R$ {{ get_item_value(item_id) }}</label></td>
+    </tr>
+{% endfor %}
+

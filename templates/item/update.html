@@ -1,0 +1,22 @@
+<tr>
+    <form action="/item/update" class="update-item" method="post">
+        <td><label>{{ id }}</label></td>
+        <td><input name="item_id" type="hidden" value="{{id}}"></label></td>
+        <td><select class="combo-box" name="material_id">
+            {% for cb_material_id, fornecedor_id, material_nome, valor, estoque, estoque_minimo in materiais %}
+                {%if cb_material_id == material_id %}
+                    <option value="{{cb_material_id}}" selected >{{material_nome}}</option>
+                {%else%}
+                    <option value="{{cb_material_id}}">{{material_nome}}</option>
+                {%endif%}
+            {% endfor %}
+        </select></td>
+
+        <td><input type="number" min="0" step="any" class="text-field" name="quantity" value="{{quantidade}}" ></td>
+        <td><input type="submit" class="btn" value="Atualizar" formmethod="post"></td>
+    </form>
+
+    <form action="/item/delete/{{ id }}">
+        <td><input type="submit" class="btn" value="Apagar" formmethod="post"></td>
+    </form>
+</tr>

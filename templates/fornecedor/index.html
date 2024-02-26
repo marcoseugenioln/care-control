@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Fornecedores</title>
+</head>
+ 
+<body>
+{% include 'header/index.html'%}
+
+
+<div class="centralized-div">
+    <h1>Fornecedores</h1>
+
+    <table>
+
+        <tr>
+            <td><label class="text-field">ID</label></td>
+            <td><label class="text-field">Nome</label></td>
+        </tr>
+
+        {% for fornecedor_id, nome in fornecedores %}
+            {% if fornecedor_id != 0 %}
+                {% if is_admin %}
+                    {% include '/fornecedor/update.html'%}
+                {% else %}
+                    <tr>
+                        <td><label class="text-field">{{ fornecedor_id }}</label></td>
+                        <td><label class="text-field">{{ nome }}</label></td>
+                    </tr>
+                {% endif %} 
+            {% endif %}                           
+        {% endfor %}
+            
+    </table>
+</div>
+
+{% if is_admin %}
+    {% include '/fornecedor/create.html' %}
+{% endif %}  
+ 
+</body>
+ 
+</html>

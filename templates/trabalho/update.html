@@ -1,0 +1,14 @@
+<tr>
+    <td><label>{{ id }}</label></td>
+    <td><label>{{ email }}</label></td>
+    <form action="/trabalho/update/{{ id }}">
+        <td><input type="text" class="text-field" name="name" value="{{ nome }}" placeholder="Nome do Trabalho"></td>
+        <td><input type="date" class="text-field" name="dia" value="{{ data }}" placeholder="Data Inicial"></td>
+        <td><label>R$ {{ valor }}</label></td>
+        <td><label>Aberto</label></td>
+        <td><input type="submit" class="btn" value="Atualizar" formmethod="post"></td>
+    </form>
+    <td><form action="/trabalho/close/{{ id }}"><input type="submit" class="btn" value="Fechar" formmethod="post"></form></td>
+    <td><form action="/trabalho/delete/{{ id }}"><input type="submit" class="btn" value="Apagar" formmethod="post"></form></td>
+    <td><form action="/trabalho/view/{{ id }}"><input type="submit" class="btn" value="Visualizar" formmethod="post"></form></td>
+</tr>

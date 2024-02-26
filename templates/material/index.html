@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Materiais</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+
+    <div class="centralized-div">
+        <h1>Materiais</h1>
+
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Nome</label></td>
+                <td><label class="text-field">Fornecedor</label></td>
+                <td><label class="text-field">Valor (R$)</label></td>
+                <td><label class="text-field">Total em Estoque</label></td>
+                <td><label class="text-field">Estoque Mínimo</label></td>
+            </tr>
+    
+            {% for id, fornecedor_id, nome, valor, estoque, estoque_minimo in materiais %}
+    
+                {% if id != 0%}
+                    {% if is_admin %}
+                            {% include '/material/update.html'%}
+                    {% else %}
+                        <tr>
+                            <td><label class="text-field">{{ id }}</label></td>
+                            <td><label class="text-field">{{ nome }}</label></td>
+                            <td><label class="text-field">{{ get_supplier(fornecedor_id) }}</label></td>
+                            <td><label class="text-field">R$ {{ valor }}</label></td>
+                            <td><label class="text-field">{{ estoque }}</label></td>
+                            <td><label class="text-field">{{ estoque_minimo }}</label></td>
+                        </tr>
+                    {% endif %}     
+                {% endif %}          
+            {% endfor %}
+        </table>
+    </div>
+    
+
+    {% if is_admin %}
+        {% include '/material/create.html' %}
+    {% endif %}  
+ 
+</body>
+ 
+</html>

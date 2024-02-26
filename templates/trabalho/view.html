@@ -1,0 +1,53 @@
+
+
+{% if trabalho_id %}
+<hr>
+    <div class="centralized-div">
+        <h1>Materiais do Trabalho ID.{{ trabalho_id }}</h1>
+    <table>
+        <tr>
+            <td><label class="text-field>">Quantidade</label></td>
+            <td><label class="text-field>">Material</label></td>
+        </tr>
+        {% for id, material_id, nome_nat, quantidade, estoque in trabalho_itens %}
+            {% if trabalho_status == 0 %}
+            <tr>
+                <td><label>{{ quantidade }}</label></td>
+                <td><label>{{ nome_nat }}</label></td>
+            </tr>
+            {% else %}
+            <tr>
+                <form action="/item_trabalho/update/{{ id }}">
+                    <td><input type="number" step="any" class="number-field" name="mat_qtd" value="{{ quantidade }}" placeholder="Quantidade usada"></td>
+                    <td><select class="combo-box" name="material_id">
+                        {% for mat_id, material in materiais_para_trabalho %}
+                            {% if material_id == mat_id %} 
+                                <option value="{{ mat_id }}" selected>{{ material }}</option>
+                            {% else %}
+                                <option value="{{ mat_id }}">{{ material }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select></td>
+                    <td><label class="text-warning">{% if  quantidade > estoque %} Falta Material! {% else %} Ok! {% endif %}</label></td>
+                    <td><input type="hidden" name="trabalho_id" value="{{ trabalho_id }}"></td>
+                    <td><input type="submit" class="btn" value="Atualizar" formmethod="post"></td>
+                </form>
+                <td><form action="/item_trabalho/delete/{{ id }}"><input type="hidden" name="trabalho_id" value="{{ trabalho_id }}"><input type="submit" class="btn" value="Apagar" formmethod="post"></form></td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        {% if trabalho_status == 1 %}
+            <tr>
+                <form action="/item_trabalho/create">
+                    <td><input type="number" step="any" class="number-field" name="mat_qtd" value="" placeholder="Quantidade usada"></td>
+                    <td><select class="combo-box" name="material_id">{% for mat_id, material in materiais_para_trabalho %}
+                        <option value="{{ mat_id }}">{{ material }}</option>
+                    {% endfor %}</select></td>
+                    <td><input type="hidden" name="trabalho_id" value="{{ trabalho_id }}"></td>
+                    <td><input type="submit" class="btn" value="Cadastrar" formmethod="post"></td>
+                </form>
+            </tr>
+        {% endif %}
+    </table>
+    </div>
+{%  endif %}

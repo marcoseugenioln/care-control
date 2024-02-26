@@ -1,0 +1,108 @@
+.error-message{
+    color:red;
+    font-size: 14px;
+}
+
+.success-message{
+    color:green;
+    font-size: 14px;
+}
+
+.header-div{
+    display:flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.header-btn{
+    background-color:mediumblue;
+    color:aliceblue;
+    width:fit-content;
+    height:fit-content;
+    margin:10px;
+    border-style: none;
+    border-radius: 5px;
+}
+
+.header-btn:active {
+    background-color: mediumblue;
+    transform: translateY(1px);
+    transform: translateX(1px);
+}
+
+.header-btn:hover{
+    background-color:deepskyblue;
+}
+
+.header-btn-img{
+    width: 28px; 
+    height: 28px;
+    padding: 5px;
+
+}
+
+#logout-img{
+    transform: translateY(10px);
+    transform: translateX(2px);
+}
+
+.btn{
+    background-color:mediumblue;
+    color:aliceblue;
+    font-size: 14px;
+    width: 150px;
+    height: 28px;
+    border-style: none;
+    border-radius: 5px;
+}
+
+.btn:active {
+    background-color: mediumblue;
+    transform: translateY(1px);
+    transform: translateX(1px);
+}
+
+.btn:hover{
+    background-color:deepskyblue;
+}
+
+.combo-box{
+    font-size: 14px;
+    width: 150px;
+    height: 28px;
+}
+
+.text-field{
+    font-size: 14px;
+    width: 150px;
+    height: 22px;
+    padding: 1px;
+}
+
+.password-field{
+    font-size: 14px;
+    width: 150px;
+    height: 22px;
+    padding: 1px;
+}
+
+.centralized-div{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-warning{
+    font-size: 14px;
+    width: 150px;
+    height: 22px;
+    padding: 1px;
+}
+
+.number-field{
+    font-size: 14px;
+    width: 150px;
+    height: 22px;
+    padding: 1px;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Página Inicial</title>
+</head>
+ 
+<body>
+
+    {% include 'header/index.html' %}
+    <br>
+
+    <div class="centralized-div">
+        <form action="/fornecedor">
+            <input type="submit" class="btn" value="Fornecedores" formmethod="post">
+        </form>
+        <br>
+        <form action="/material">
+            <input type="submit" class="btn" value="Materiais" formmethod="post">
+        </form>
+        <br>
+        <form action="/pedido">
+            <input type="submit" class="btn" value="Pedidos" formmethod="post">
+        </form>
+        <br>
+        <form action="trabalho">
+            <input type="submit" class="btn" value="Trabalhos" formmethod="post">
+        </form>
+        <br>
+        <form action="/usuario">
+            <input type="submit" class="btn" value="Usuários" formmethod="post">
+        </form>
+    </div>
+    
+</body>
+ 
+</html>
