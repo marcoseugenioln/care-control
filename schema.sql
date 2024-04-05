@@ -66,5 +66,3 @@ INSERT OR IGNORE INTO user (email, password, is_admin) VALUES
 ('castilho@root.com', 'root', 1),
 ('user@user.com', 'user', 0),
 ('caco@alternativac.com.br', 'EstudoUnivesp123', 1);
-
-
