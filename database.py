@@ -90,3 +90,9 @@ class Database():
         logger.info(f"UPDATE user SET email = '{email}', password = '{password}', is_admin = {is_admin} WHERE id == {user_id};")
         self.query.execute(f"UPDATE user SET email = '{email}', password = '{password}', is_admin = {is_admin} WHERE id == {user_id};")
         self.connection.commit()
+
+    def get_devices(self, isadm, uid):
+        self.query.execute("SELECT id, user_id, nome, guid FROM dispositivo WHERE (? OR user_id = ?);", (isadm, uid))
+        logger.info(f"SELECT id, user_id, nome, guid FROM dispositivo WHERE ({isadm} OR user_id = {uid});")
+        return self.query.fetchall()
+

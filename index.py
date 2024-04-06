@@ -132,6 +132,24 @@ def delete_user(id):
     database.delete_user(id)
     return redirect(url_for('user'))
 
+@app.route('/device', methods=['GET', 'POST'])
+def device():
+    return render_template(
+        'device/index.html',
+        devices=database.get_devices(session['is_admin'], session['user_id']),
+    )
+
+@app.route('/device/create', methods=['GET', 'POST'])
+def create_device():
+    # if (request.method == 'POST' and 'supplier_name' in request.form):
+        #
+        # supplier_name = request.form['supplier_name']
+        #
+        # if database.insert_supplier(supplier_name):
+        #     return redirect(url_for('fornecedor'))
+
+    return redirect(url_for('device'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

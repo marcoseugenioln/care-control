@@ -1,0 +1,14 @@
+<tr>
+    <form action="/device/update/{{ id }}" method="post">
+        <td><label>{{ id }}</label></td>
+        <td><input type="text" class="text-field" name="nome" value="{{ nome }}"></td>
+        <td><input type="text" class="text-field" name="guid" value="{{ guid }}"></td>
+        <td><input type="submit" class="btn" value="Atualizar"></td>
+    </form>
+    <form action="/device/delete/{{ id }}" method="post">
+        <td><input type="submit" class="btn" value="Apagar"></td>
+    </form>
+    <form action="/device/edit/{{ id }}" method="post">
+        <td><input type="submit" class="btn" value="Reg / Alarm"></td>
+    </form>
+</tr>
