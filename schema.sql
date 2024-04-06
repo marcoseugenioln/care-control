@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS user (
 	CONSTRAINT usuario_un UNIQUE (email)
 );
 
-CREATE TABLE acompanhado (
+CREATE TABLE IF NOT EXISTS acompanhado (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER,
     nome TEXT(120) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE acompanhado (
 	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-CREATE TABLE historico (
+CREATE TABLE IF NOT EXISTS historico (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER,
     data TEXT(19),
@@ -25,7 +25,7 @@ CREATE TABLE historico (
 	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-CREATE TABLE dispositivo (
+CREATE TABLE IF NOT EXISTS dispositivo (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER,
 	acompanhando_id INTEGER,
