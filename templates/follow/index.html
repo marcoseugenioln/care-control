@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Dispositivos</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+
+    <div class="index-div">
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Dispositivo</label></td>
+                <td><label class="text-field">GUID</label></td>
+            </tr>
+            {% for id, nome, guid in devices %}
+                {% include '/device/update.html'%}
+            {% endfor %}
+        </table>
+    </div>
+    {% include '/device/create.html' %}
+</body>
+ 
+</html>

@@ -164,6 +164,12 @@ def update_device(id):
         )
     return redirect(url_for('device'))
 
+@app.route('/follow', methods=['GET', 'POST'])
+def follow():
+    return render_template(
+        'follow/index.html',
+        devices=database.get_follows(session['is_admin'], session['user_id']),
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)

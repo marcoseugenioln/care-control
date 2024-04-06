@@ -111,3 +111,8 @@ class Database():
         self.query.execute("UPDATE dispositivo SET nome = ?, guid = ? WHERE id =?;", (nome, guid, id))
         logger.info(f"UPDATE dispositivo SET nome = {nome}, guid = {guid} WHERE id = {id};")
         self.connection.commit()
+
+    def get_follows(self, isadm, uid):
+        self.query.execute("SELECT id, nome, datanasc, acompanhante FROM acompanhado WHERE (? OR user_id = ?);", (isadm, uid))
+        logger.info(f"SELECT id, nome, datanasc, acompanhante FROM acompanhado WHERE ({isadm} OR user_id = {uid});")
+        return self.query.fetchall()
