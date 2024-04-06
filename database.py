@@ -47,12 +47,12 @@ class Database():
         
         return True
     
-    def insert_user(self, email: str, password: str, is_admin: str) -> bool:        
+    def insert_user(self, email: str, password: str, is_admin: str) -> bool:
         self.query.execute(f"INSERT OR IGNORE INTO user(email, password, is_admin) values ('{email}', '{password}', {is_admin});")
         logger.info(f"INSERT OR IGNORE INTO user(email, password, is_admin) values ('{email}', '{password}', {is_admin});")
         self.connection.commit()
         return True
-    
+
     def get_user_email(self, user_id: int) -> str:
         self.query.execute(f"SELECT email FROM user WHERE id == {user_id}")
         logger.info(f"SELECT email FROM user WHERE id == {user_id}")
@@ -92,7 +92,12 @@ class Database():
         self.connection.commit()
 
     def get_devices(self, isadm, uid):
-        self.query.execute("SELECT id, user_id, nome, guid FROM dispositivo WHERE (? OR user_id = ?);", (isadm, uid))
+        self.query.execute("SELECT id, nome, guid FROM dispositivo WHERE (? OR user_id = ?);", (isadm, uid))
         logger.info(f"SELECT id, user_id, nome, guid FROM dispositivo WHERE ({isadm} OR user_id = {uid});")
         return self.query.fetchall()
 
+    def insert_device(self, device: str, guid: str, uid: int) -> bool:
+        self.query.execute("INSERT OR IGNORE INTO dispositivo(user_id, nome, guid) values (?, ?, ?);", (uid, device, guid))
+        logger.info(f"INSERT OR IGNORE INTO dispositivo(user_id, nome, guid) values ({uid}, {device}, {guid});")
+        self.connection.commit()
+        return True

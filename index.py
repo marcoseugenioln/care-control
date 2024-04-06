@@ -141,13 +141,12 @@ def device():
 
 @app.route('/device/create', methods=['GET', 'POST'])
 def create_device():
-    # if (request.method == 'POST' and 'supplier_name' in request.form):
-        #
-        # supplier_name = request.form['supplier_name']
-        #
-        # if database.insert_supplier(supplier_name):
-        #     return redirect(url_for('fornecedor'))
-
+    if (request.method == 'POST'):
+        database.insert_device(
+            request.form['nome'],
+            request.form['guid'],
+            session['user_id'],
+        )
     return redirect(url_for('device'))
 
 
