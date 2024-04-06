@@ -154,6 +154,16 @@ def delete_device(id):
     database.delete_device(id)
     return redirect(url_for('device'))
 
+@app.route('/device/update/<id>', methods=['GET', 'POST'])
+def update_device(id):
+    if (request.method == 'POST'):
+        database.update_device(
+            id,
+            request.form['nome'],
+            request.form['guid'],
+        )
+    return redirect(url_for('device'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -106,3 +106,8 @@ class Database():
         self.query.execute("DELETE FROM dispositivo WHERE id = ?;", ((id,)))
         logger.info(f"DELETE FROM dispositivo WHERE id = {id};")
         self.connection.commit()
+
+    def update_device(self, id, nome, guid):
+        self.query.execute("UPDATE dispositivo SET nome = ?, guid = ? WHERE id =?;", (nome, guid, id))
+        logger.info(f"UPDATE dispositivo SET nome = {nome}, guid = {guid} WHERE id = {id};")
+        self.connection.commit()
