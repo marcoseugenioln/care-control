@@ -101,3 +101,8 @@ class Database():
         logger.info(f"INSERT OR IGNORE INTO dispositivo(user_id, nome, guid) values ({uid}, {device}, {guid});")
         self.connection.commit()
         return True
+
+    def delete_device(self, id):
+        self.query.execute("DELETE FROM dispositivo WHERE id = ?;", ((id,)))
+        logger.info(f"DELETE FROM dispositivo WHERE id = {id};")
+        self.connection.commit()

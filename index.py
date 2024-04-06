@@ -149,6 +149,11 @@ def create_device():
         )
     return redirect(url_for('device'))
 
+@app.route('/device/delete/<id>', methods=['GET', 'POST'])
+def delete_device(id):
+    database.delete_device(id)
+    return redirect(url_for('device'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
