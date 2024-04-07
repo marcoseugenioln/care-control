@@ -168,8 +168,35 @@ def update_device(id):
 def follow():
     return render_template(
         'follow/index.html',
-        devices=database.get_follows(session['is_admin'], session['user_id']),
+        follows=database.get_follow(session['is_admin'], session['user_id']),
     )
+
+@app.route('/follow/create', methods=['GET', 'POST'])
+def create_follow():
+    if (request.method == 'POST'):
+        database.insert_follow(
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+            session['user_id'],
+        )
+    return redirect(url_for('follow'))
+
+@app.route('/follow/delete/<id>', methods=['GET', 'POST'])
+def delete_follow(id):
+    database.delete_follow(id)
+    return redirect(url_for('follow'))
+
+@app.route('/follow/update/<id>', methods=['GET', 'POST'])
+def update_follow(id):
+    if (request.method == 'POST'):
+        database.update_follow(
+            id,
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+        )
+    return redirect(url_for('follow'))
 
 if __name__ == '__main__':
     app.run(debug=True)

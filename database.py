@@ -1,5 +1,7 @@
 import sqlite3
 import logging
+from datetime import datetime
+
 
 logger = logging.getLogger('werkzeug')
 handler = logging.FileHandler('site-log.log')
@@ -112,7 +114,41 @@ class Database():
         logger.info(f"UPDATE dispositivo SET nome = {nome}, guid = {guid} WHERE id = {id};")
         self.connection.commit()
 
-    def get_follows(self, isadm, uid):
+    def get_follow(self, isadm, uid):
         self.query.execute("SELECT id, nome, datanasc, acompanhante FROM acompanhado WHERE (? OR user_id = ?);", (isadm, uid))
         logger.info(f"SELECT id, nome, datanasc, acompanhante FROM acompanhado WHERE ({isadm} OR user_id = {uid});")
         return self.query.fetchall()
+
+    def save_log(self, id, logstr):
+        agora = datetime.now()
+        agorastr = agora.strftime("%d-%m-%Y %H:%M:%S")
+        self.query.execute(
+            "INSERT OR IGNORE INTO historico(acompanhado_id, data, log) values (?, ?, ?);",
+            (id, agorastr, logstr))
+        self.connection.commit()
+
+    def insert_follow(self, nome: str, datan: str, acomp: str, uid: int) -> bool:
+        self.query.execute("INSERT OR IGNORE INTO acompanhado(user_id, nome, datanasc, acompanhante) values (?, ?, ?, ?);", (uid, nome, datan, acomp))
+        logger.info(f"INSERT OR IGNORE INTO acompanhado(user_id, nome, datanasc, acompanhante) values ({uid}, {nome}, {datan}, {acomp});")
+        self.connection.commit()
+        if acomp != "":
+            self.query.execute("SELECT id FROM acompanhado WHERE user_id = ? AND nome = ?;", (uid, nome))
+            vid = self.query.fetchone()[0]
+            self.save_log(vid, 'Cuidador: ' + acomp)
+        return True
+
+    def delete_follow(self, id):
+        self.query.execute("DELETE FROM acompanhado WHERE id = ?;", ((id,)))
+        logger.info(f"DELETE FROM acompanhado WHERE id = {id};")
+        self.connection.commit()
+
+    def update_follow(self, id, nome, datan, acomp):
+        self.query.execute("SELECT acompanhante FROM acompanhado WHERE id = ?;", ((id,)))
+        oldcomp = self.query.fetchone()[0]
+        self.query.execute("UPDATE acompanhado SET nome = ?, datanasc = ?, acompanhante = ? WHERE id =?;", (nome, datan, acomp, id))
+        logger.info(f"UPDATE acompanhado SET nome = {nome}, datanasc = {datan}, acompanhante = {acomp} WHERE id = {id};")
+        self.connection.commit()
+
+        if acomp != oldcomp:
+            self.save_log(id, 'Cuidador: ' + acomp)
+

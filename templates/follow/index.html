@@ -9,19 +9,31 @@
 <body>
     {% include 'header/index.html'%}
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+        $(function() {
+            $("#data").datepicker({
+                dateFormat: 'dd-mm-yy' // Formato da data: dia-mês-ano
+            });
+        });
+    </script>
+
     <div class="index-div">
         <table>
             <tr>
                 <td><label class="text-field">ID</label></td>
-                <td><label class="text-field">Dispositivo</label></td>
-                <td><label class="text-field">GUID</label></td>
+                <td><label class="text-field">Acompanhado</label></td>
+                <td><label class="text-field">Nascimento</label></td>
+                <td><label class="text-field">Acompanhante</label></td>
             </tr>
-            {% for id, nome, guid in devices %}
-                {% include '/device/update.html'%}
+            {% for id, nome, datan, acomp in follows %}
+                {% include '/follow/update.html'%}
             {% endfor %}
         </table>
     </div>
-    {% include '/device/create.html' %}
+    {% include '/follow/create.html' %}
 </body>
  
 </html>
