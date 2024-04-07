@@ -152,3 +152,11 @@ class Database():
         if acomp != oldcomp:
             self.save_log(id, 'Cuidador: ' + acomp)
 
+    def get_own_name(self, id):
+        self.query.execute("SELECT nome + ' - ' + datanasc FROM acompanhado WHERE id = ?;", ((id,)))
+        return self.query.fetchone()[0]
+
+    def get_log(self, id):
+        self.query.execute("SELECT id, data, log FROM historico WHERE acompanhado_id = ?;", ((id,)))
+        logger.info(f"SELECT id, data, log FROM historico WHERE acompanhado_id = {id};")
+        return self.query.fetchall()

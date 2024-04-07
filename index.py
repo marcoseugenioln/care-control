@@ -198,5 +198,13 @@ def update_follow(id):
         )
     return redirect(url_for('follow'))
 
+@app.route('/hist/<id>', methods=['GET', 'POST'])
+def hist(id):
+    return render_template(
+        'hist/index.html',
+        onwname=database.get_own_name(id),
+        logs=database.get_log(id),
+    )
+
 if __name__ == '__main__':
     app.run(debug=True)
