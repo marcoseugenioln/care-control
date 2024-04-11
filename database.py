@@ -152,3 +152,7 @@ class Database():
         if acomp != oldcomp:
             self.save_log(id, 'Cuidador: ' + acomp)
 
+
+    def get_alarms(self, guid):
+        return '00:00:00'
+

@@ -198,5 +198,14 @@ def update_follow(id):
         )
     return redirect(url_for('follow'))
 
+@app.route('/request-alarm-schedule/<guid>', methods=['GET'])
+def request_alarm_schedule(guid):
+    return database.get_alarms(guid)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    DEBUG = True
+
+    if DEBUG:
+        app.run(host="192.168.1.7", port=3000, debug=DEBUG)
+    else:
+        app.run(port=3000)
