@@ -170,3 +170,7 @@ class Database():
         logger.info(f"SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE id =  {id});")
         self.query.execute("SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE id = ?;", ((id, )))
         return self.query.fetchall()
+
+    def get_alarms(self, guid):
+        return '00:00:00'
+
