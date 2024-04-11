@@ -198,5 +198,29 @@ def update_follow(id):
         )
     return redirect(url_for('follow'))
 
+@app.route('/hist/<id>', methods=['GET', 'POST'])
+def hist(id):
+    return render_template(
+        'hist/index.html',
+        onwname=database.get_own_name(id),
+        logs=database.get_log(id),
+    )
+
+@app.route('/device/edit/<id>', methods=['GET', 'POST'])
+def devide_edit(id):
+    if (request.method == 'GET'):
+        return render_template(
+            'device/edit.html',
+            folist=database.get_folist(session['is_admin'], session['user_id']),
+            devdat=database.get_devdet(id),
+        )
+    if (request.method == 'POST'):
+        id,
+        request.form[''],
+        request.form[''],
+        request.form[''],
+        return redirect(url_for('device'))
+        pass
+
 if __name__ == '__main__':
     app.run(debug=True)

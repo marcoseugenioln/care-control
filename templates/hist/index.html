@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Log registrado - {{ onwname }}</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+
+    <div class="index-div">
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Data</label></td>
+                <td><label class="text-field">Log info</label></td>
+            </tr>
+            {% for id, datan, logi in logs %}
+                <td><label class="text-field">{{ id }}</label></td>
+                <td><label class="text-field">{{ datan }}</label></td>
+                <td><label class="text-field">{{ logi }}</label></td>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+ 
+</html>

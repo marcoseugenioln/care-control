@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Dispositivos</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+
+    <div class="index-div">
+    <form action="/device/edit/{{ id }}" method="post">
+    <table>
+        {% for id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log in devdat %}
+        <tr>
+            <td><label class="text-field">Dispositivo:</label></td>
+            <td><label class="text-field">{{ id }} - {{ nome }} - {{ guid }}</label></td>
+        </tr><tr>
+            <td><label class="text-field">Acompanhado:</label></td>
+            <td><select class="combo-box" name="acompanhando_id">
+                {% for aid, anome in folist %}
+                    {% if acompanhando_id == aid %}
+                        <option value="{{ aid }}" selected>{{ anome }}</option>
+                    {% else %}
+                        <option value="{{ aid }}">{{ anome }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+        </tr></table>
+        <table>
+            <tr>
+            <td><label class="text-field">Alarme 1:</label></td>
+            <td><input type="time" id="hora" name="alarme1_tme" value="{{ alarme1_tme }}"></td>
+            <td><input type="text" class="text-field" name="alarme1_log" value="{{ alarme1_log }}" placeholder="Logar"></td>
+            <td><label class="text-field">Evento de confirmação:</label></td>
+            <td><select class="combo-box" name="alarme1_evt">
+                {% for envn in [1, 2, 3] %}
+                    {% if alarme1_evt == envn %}
+                        <option value="{{ envn }}" selected>Evento {{ envn }}</option>
+                    {% else %}
+                        <option value="{{ envn }}">Evento {{ envn }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+            </tr>
+
+            <tr>
+            <td><label class="text-field">Alarme 2:</label></td>
+            <td><input type="time" id="hora" name="alarme2_tme" value="{{ alarme2_tme }}"></td>
+            <td><input type="text" class="text-field" name="alarme2_log" value="{{ alarme2_log }}" placeholder="Logar"></td>
+            <td><label class="text-field">Evento de confirmação:</label></td>
+            <td><select class="combo-box" name="alarme2_evt">
+                {% for envn in [1, 2, 3] %}
+                    {% if alarme1_evt == envn %}
+                        <option value="{{ envn }}" selected>Evento {{ envn }}</option>
+                    {% else %}
+                        <option value="{{ envn }}">Evento {{ envn }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+            </tr>
+
+            <tr>
+            <td><label class="text-field">Alarme 3:</label></td>
+            <td><input type="time" id="hora" name="alarme3_tme" value="{{ alarme3_tme }}"></td>
+            <td><input type="text" class="text-field" name="alarme3_log" value="{{ alarme3_log }}" placeholder="Logar"></td>
+            <td><label class="text-field">Evento de confirmação:</label></td>
+            <td><select class="combo-box" name="alarme3_evt">
+                {% for envn in [1, 2, 3] %}
+                    {% if alarme1_evt == envn %}
+                        <option value="{{ envn }}" selected>Evento {{ envn }}</option>
+                    {% else %}
+                        <option value="{{ envn }}">Evento {{ envn }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+            </tr>
+
+            <tr>
+            <td><label class="text-field">Alarme 4:</label></td>
+            <td><input type="time" id="hora" name="alarme1_tme" value="{{ alarme4_tme }}"></td>
+            <td><input type="text" class="text-field" name="alarme4_log" value="{{ alarme4_log }}" placeholder="Logar"></td>
+            <td><label class="text-field">Evento de confirmação:</label></td>
+            <td><select class="combo-box" name="alarme4_evt">
+                {% for envn in [1, 2, 3] %}
+                    {% if alarme1_evt == envn %}
+                        <option value="{{ envn }}" selected>Evento {{ envn }}</option>
+                    {% else %}
+                        <option value="{{ envn }}">Evento {{ envn }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+            </tr>
+
+            <tr>
+            <td><label class="text-field">Alarme 5:</label></td>
+            <td><input type="time" id="hora" name="alarme5_tme" value="{{ alarme5_tme }}"></td>
+            <td><input type="text" class="text-field" name="alarme5_log" value="{{ alarme5_log }}" placeholder="Logar"></td>
+            <td><label class="text-field">Evento de confirmação:</label></td>
+            <td><select class="combo-box" name="alarme5_evt">
+                {% for envn in [1, 2, 3] %}
+                    {% if alarme1_evt == envn %}
+                        <option value="{{ envn }}" selected>Evento {{ envn }}</option>
+                    {% else %}
+                        <option value="{{ envn }}">Evento {{ envn }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+            <td><label class="text-field">Evento 1:</label></td>
+            <td><input type="text" class="text-field" name="evento1_log" value="{{ evento1_log }}" placeholder="Logar"></td>
+            </tr><tr>
+            <td><label class="text-field">Evento 2:</label></td>
+            <td><input type="text" class="text-field" name="evento2_log" value="{{ evento2_log }}" placeholder="Logar"></td>
+            </tr>
+            <tr>
+            <td><label class="text-field">Evento 3:</label></td>
+            <td><input type="text" class="text-field" name="evento3_log" value="{{ evento3_log }}" placeholder="Logar"></td>
+            </tr>
+        </table>
+        {% endfor %}
+    </table>
+    <input type="submit" class="btn" value="Gravar">
+    </form>
+    </div>
+</body>
+ 
+</html>

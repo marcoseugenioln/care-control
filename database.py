@@ -152,3 +152,21 @@ class Database():
         if acomp != oldcomp:
             self.save_log(id, 'Cuidador: ' + acomp)
 
+    def get_own_name(self, id):
+        self.query.execute("SELECT nome || ' - ' || datanasc FROM acompanhado WHERE id = ?;", ((id,)))
+        return self.query.fetchone()[0]
+
+    def get_log(self, id):
+        self.query.execute("SELECT id, data, log FROM historico WHERE acompanhado_id = ?;", ((id,)))
+        logger.info(f"SELECT id, data, log FROM historico WHERE acompanhado_id = {id};")
+        return self.query.fetchall()
+
+    def get_folist(self, isadm, uid):
+        self.query.execute("SELECT id, nome || ' - ' || datanasc AS nome FROM acompanhado WHERE (? OR user_id = ?);", (isadm, uid))
+        logger.info(f"SELECT id, nome || ' - ' || datanasc FROM acompanhado WHERE ({isadm} OR user_id = {uid});")
+        return self.query.fetchall()
+
+    def get_devdet(self, id):
+        logger.info(f"SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE id =  {id});")
+        self.query.execute("SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE id = ?;", ((id, )))
+        return self.query.fetchall()
