@@ -82,21 +82,21 @@ def register():
     
     return render_template('auth/register.html', logged_in = is_logged)
 
-@app.route('/usuario', methods=['GET', 'POST'])
-def usuario():
+@app.route('/user', methods=['GET', 'POST'])
+def user():
     
     return render_template(
-        'usuario/index.html', 
+        'user/index.html', 
         get_admin=database.get_admin, 
-        usuarios = database.get_users(), 
+        users = database.get_users(), 
         current_user_id = session['user_id'],
         current_user_email = database.get_user_email(session['user_id']),
         current_user_password = database.get_user_password(session['user_id']),
         is_admin = session['is_admin']
         )
 
-@app.route('/usuario/create', methods=['GET', 'POST'])
-def create_usuario():
+@app.route('/user/create', methods=['GET', 'POST'])
+def create_user():
     
     if (request.method == 'POST' and 'email' in request.form and 'new_password' in request.form ):
         
@@ -110,12 +110,12 @@ def create_usuario():
 
         if database.insert_user(email, new_password, is_admin):
             if 'user_id' in session:
-                return redirect(url_for('usuario'))
+                return redirect(url_for('user'))
 
         return redirect('/login')
 
-@app.route('/usuario/update/<id>', methods=['GET', 'POST'])
-def update_usuario(id):
+@app.route('/user/update/<id>', methods=['GET', 'POST'])
+def update_user(id):
     if (request.method == 'POST' and 'email' in request.form and 'new_password' in request.form and 'is_admin' in request.form):
         
         email = request.form['email']
@@ -123,15 +123,80 @@ def update_usuario(id):
         is_admin = request.form['is_admin']
 
         database.update_user(id, email, new_password, is_admin)
-        return redirect(url_for('usuario'))  
+        return redirect(url_for('user'))  
         
-    return redirect(url_for('usuario'))
+    return redirect(url_for('user'))
 
-@app.route('/usuario/delete/<id>', methods=['GET', 'POST'])
+@app.route('/user/delete/<id>', methods=['GET', 'POST'])
 def delete_user(id):
     database.delete_user(id)
-    return redirect(url_for('usuario'))
+    return redirect(url_for('user'))
 
+@app.route('/device', methods=['GET', 'POST'])
+def device():
+    return render_template(
+        'device/index.html',
+        devices=database.get_devices(session['is_admin'], session['user_id']),
+    )
+
+@app.route('/device/create', methods=['GET', 'POST'])
+def create_device():
+    if (request.method == 'POST'):
+        database.insert_device(
+            request.form['nome'],
+            request.form['guid'],
+            session['user_id'],
+        )
+    return redirect(url_for('device'))
+
+@app.route('/device/delete/<id>', methods=['GET', 'POST'])
+def delete_device(id):
+    database.delete_device(id)
+    return redirect(url_for('device'))
+
+@app.route('/device/update/<id>', methods=['GET', 'POST'])
+def update_device(id):
+    if (request.method == 'POST'):
+        database.update_device(
+            id,
+            request.form['nome'],
+            request.form['guid'],
+        )
+    return redirect(url_for('device'))
+
+@app.route('/follow', methods=['GET', 'POST'])
+def follow():
+    return render_template(
+        'follow/index.html',
+        follows=database.get_follow(session['is_admin'], session['user_id']),
+    )
+
+@app.route('/follow/create', methods=['GET', 'POST'])
+def create_follow():
+    if (request.method == 'POST'):
+        database.insert_follow(
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+            session['user_id'],
+        )
+    return redirect(url_for('follow'))
+
+@app.route('/follow/delete/<id>', methods=['GET', 'POST'])
+def delete_follow(id):
+    database.delete_follow(id)
+    return redirect(url_for('follow'))
+
+@app.route('/follow/update/<id>', methods=['GET', 'POST'])
+def update_follow(id):
+    if (request.method == 'POST'):
+        database.update_follow(
+            id,
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+        )
+    return redirect(url_for('follow'))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,5 +1,5 @@
 <tr>
-    <form action="/usuario/update/{{ id }}" method="post">
+    <form action="/user/update/{{ id }}" method="post">
 
         <td><label>{{ id }}</label></td>
 
@@ -32,7 +32,7 @@
     </form>
 
     {% if is_admin %}
-        <form action="/usuario/delete/{{ id }}" method="post">
+        <form action="/user/delete/{{ id }}" method="post">
             <td><input type="submit" class="btn" value="Apagar"></td>
         </form>
     {% endif %}
