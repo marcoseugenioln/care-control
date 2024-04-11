@@ -132,6 +132,71 @@ def delete_user(id):
     database.delete_user(id)
     return redirect(url_for('user'))
 
+@app.route('/device', methods=['GET', 'POST'])
+def device():
+    return render_template(
+        'device/index.html',
+        devices=database.get_devices(session['is_admin'], session['user_id']),
+    )
+
+@app.route('/device/create', methods=['GET', 'POST'])
+def create_device():
+    if (request.method == 'POST'):
+        database.insert_device(
+            request.form['nome'],
+            request.form['guid'],
+            session['user_id'],
+        )
+    return redirect(url_for('device'))
+
+@app.route('/device/delete/<id>', methods=['GET', 'POST'])
+def delete_device(id):
+    database.delete_device(id)
+    return redirect(url_for('device'))
+
+@app.route('/device/update/<id>', methods=['GET', 'POST'])
+def update_device(id):
+    if (request.method == 'POST'):
+        database.update_device(
+            id,
+            request.form['nome'],
+            request.form['guid'],
+        )
+    return redirect(url_for('device'))
+
+@app.route('/follow', methods=['GET', 'POST'])
+def follow():
+    return render_template(
+        'follow/index.html',
+        follows=database.get_follow(session['is_admin'], session['user_id']),
+    )
+
+@app.route('/follow/create', methods=['GET', 'POST'])
+def create_follow():
+    if (request.method == 'POST'):
+        database.insert_follow(
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+            session['user_id'],
+        )
+    return redirect(url_for('follow'))
+
+@app.route('/follow/delete/<id>', methods=['GET', 'POST'])
+def delete_follow(id):
+    database.delete_follow(id)
+    return redirect(url_for('follow'))
+
+@app.route('/follow/update/<id>', methods=['GET', 'POST'])
+def update_follow(id):
+    if (request.method == 'POST'):
+        database.update_follow(
+            id,
+            request.form['nome'],
+            request.form['datan'],
+            request.form['acomp'],
+        )
+    return redirect(url_for('follow'))
 
 if __name__ == '__main__':
     app.run(debug=True)
