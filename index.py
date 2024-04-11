@@ -214,7 +214,13 @@ def devide_edit(id):
             folist=database.get_folist(session['is_admin'], session['user_id']),
             devdat=database.get_devdet(id),
         )
-    pass
+    if (request.method == 'POST'):
+        id,
+        request.form[''],
+        request.form[''],
+        request.form[''],
+        return redirect(url_for('device'))
+        pass
 
 if __name__ == '__main__':
     app.run(debug=True)
