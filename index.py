@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, Blueprint, flash, session, abort
+from flask import Flask, redirect, url_for, request, render_template, Blueprint, flash, session, abort, jsonify
 from flask import Flask
 from database import Database
 import logging
@@ -215,12 +215,61 @@ def devide_edit(id):
             devdat=database.get_devdet(id),
         )
     if (request.method == 'POST'):
-        id,
-        request.form[''],
-        request.form[''],
-        request.form[''],
+        database.update_devdet(
+            id, session['user_id'], request.form['acompanhando_id'], request.form['alarme1_tme'],
+            request.form['alarme1_log'], request.form['alarme1_evt'], request.form['alarme2_tme'],
+            request.form['alarme2_log'], request.form['alarme2_evt'], request.form['alarme3_tme'],
+            request.form['alarme3_log'], request.form['alarme3_evt'], request.form['alarme4_tme'],
+            request.form['alarme4_log'], request.form['alarme4_evt'], request.form['alarme5_tme'],
+            request.form['alarme5_log'], request.form['alarme5_evt'], request.form['evento1_log'],
+            request.form['evento2_log'], request.form['evento3_log'] )
         return redirect(url_for('device'))
         pass
+
+"""
+### Interface de configuração do dispositivo em REST
+
+# Le a aconfiguração do dispositivo 
+curl -X GET -H "Content-Type: application/json" -d '{"guid": "cd4c9776-5caa-48c6-9937-b06948310a09"}' http://localhost:5000/device/rest
+
+# posta um evento
+curl -X POST -H "Content-Type: application/json" -d '{"evento": 1, "guid": "cd4c9776-5caa-48c6-9937-b06948310a09"}' http://localhost:5000/device/rest
+"""
+@app.route('/device/rest', methods=['GET', 'POST'])
+def device_rest():
+    data = request.get_json()
+    if 'guid' not in data:
+        return jsonify({"result": "GUID MISSING"})
+
+    guid = data['guid']
+    if (request.method == 'GET'):
+        devdat = database.get_devguid(guid)
+
+        if devdat is None:
+            return jsonify({"guid": guid, "result": "GUID NOT FOUND"})
+
+        return jsonify({"guid": devdat[0], "alarme1_tme": devdat[1], "alarme1_log": devdat[2], "alarme1_evt": devdat[3],
+            "alarme2_tme": devdat[4], "alarme2_log": devdat[5], "alarme2_evt": devdat[6], "alarme3_tme": devdat[7],
+            "alarme3_log": devdat[8], "alarme3_evt": devdat[9], "alarme4_tme": devdat[10], "alarme4_log": devdat[11],
+            "alarme4_evt": devdat[12], "alarme5_tme": devdat[13], "alarme5_log": devdat[14], "alarme5_evt": devdat[15],
+            "evento1_log": devdat[16], "evento2_log": devdat[17], "evento3_log": devdat[18]})
+
+    if (request.method == 'POST'):
+        devlog = database.get_devlog(guid)
+        if devlog is None:
+            return jsonify({"guid": guid, "result": "GUID NOT FOUND"})
+
+        if 'evento' not in data:
+            return jsonify({"guid": guid, "result": "EVENT NOT FOUND"})
+
+        evento = data['evento']
+        if evento < 1 or evento > 3:
+            return jsonify({"guid": guid, "result": "WRONG EVENT"})
+
+        database.save_log(devlog[0], "Evento: " + devlog[evento])
+
+        #return jsonify({"guid": guid, "id": devlog[0], "STR": devlog[evento], "result": "OK"})
+        return jsonify({"guid": guid, "result": "OK"})
 
 if __name__ == '__main__':
     app.run(debug=True)
