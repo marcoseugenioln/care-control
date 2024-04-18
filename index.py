@@ -271,5 +271,16 @@ def device_rest():
         #return jsonify({"guid": guid, "id": devlog[0], "STR": devlog[evento], "result": "OK"})
         return jsonify({"guid": guid, "result": "OK"})
 
+@app.route('/request-alarm-schedule/<guid>', methods=['GET'])
+def request_alarm_schedule(guid):
+    return database.get_alarms(guid)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    DEBUG   = True
+    HOST_IP = "192.168.1.7"
+    PORT    = 3000
+
+    if DEBUG:
+        app.run(host=HOST_IP, port=PORT, debug=DEBUG)
+    else:
+        app.run(port=PORT)

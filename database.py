@@ -208,3 +208,6 @@ class Database():
         logger.info(f"SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE guid =  {guid});")
         self.query.execute("SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE guid = ?;", ((guid, )))
         return self.query.fetchone()
+      
+    def get_alarms(self, guid):
+        return '00:00:00'
