@@ -171,6 +171,43 @@ class Database():
         self.query.execute("SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE id = ?;", ((id, )))
         return self.query.fetchall()
 
+    def update_devdet(self, id, user_id, acompanhando_id, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme,
+                      alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log,
+                      alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log):
+
+        self.query.execute(
+            "UPDATE dispositivo SET acompanhando_id = ?, alarme1_tme = ?, alarme1_log = ?, alarme1_evt = ?,"
+            " alarme2_tme = ?, alarme2_log = ?, alarme2_evt = ?, alarme3_tme = ?, alarme3_log = ?, alarme3_evt = ?,"
+            " alarme4_tme = ?, alarme4_log = ?, alarme4_evt = ?, alarme5_tme = ?, alarme5_log = ?, alarme5_evt = ?,"
+            " evento1_log = ?, evento2_log = ?, evento3_log = ? WHERE id = ?",
+            (acompanhando_id, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt,
+             alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log,
+             alarme5_evt, evento1_log, evento2_log, evento3_log, id))
+        logger.info(f"UPDATE dispositivo SET acompanhando_id = { acompanhando_id }, alarme1_tme = { alarme1_tme },"
+                    " alarme1_log = { alarme1_log }, alarme1_evt = { alarme1_evt }, alarme2_tme = { alarme2_tme },"
+                    " alarme2_log = { alarme2_log }, alarme2_evt = { alarme2_evt }, alarme3_tme = { alarme3_tme },"
+                    " alarme3_log = { alarme3_log }, alarme3_evt = { alarme3_evt }, alarme4_tme = { alarme4_tme },"
+                    " alarme4_log = { alarme4_log }, alarme4_evt = { alarme4_evt }, alarme5_tme = { alarme5_tme },"
+                    " alarme5_log = { alarme5_log }, alarme5_evt = { alarme5_evt }, evento1_log = { evento1_log },"
+                    " evento2_log = { evento2_log }, evento3_log = { evento3_log } WEHRE id = { id }")
+        self.connection.commit()
+        pass
+
+    def get_devguid(self, guid):
+        logger.info(f"SELECT guid, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt,"
+                    " alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme,"
+                    " alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log"
+                    " FROM dispositivo WHERE guid =  {guid});")
+        self.query.execute("SELECT guid, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log,"
+                           " alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log,"
+                           " alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log,"
+                           " evento3_log FROM dispositivo WHERE guid = ?;", ((guid, )))
+        return self.query.fetchone()
+
+    def get_devlog(self, guid):
+        logger.info(f"SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE guid =  {guid});")
+        self.query.execute("SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM dispositivo WHERE guid = ?;", ((guid, )))
+        return self.query.fetchone()
+      
     def get_alarms(self, guid):
         return '00:00:00'
-
