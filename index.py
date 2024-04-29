@@ -22,7 +22,8 @@ def index():
         return redirect(url_for('login'))
     return render_template('index.html')
         
-    
+################################################################################################## 
+ 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -60,7 +61,6 @@ def logout():
         session.pop('is_admin')
 
     return redirect(url_for(f'login'))
-
     
 @app.route("/register", methods=['GET','POST'])
 def register():
@@ -81,6 +81,8 @@ def register():
                 is_logged = True                 
     
     return render_template('auth/register.html', logged_in = is_logged)
+
+##################################################################################################
 
 @app.route('/user', methods=['GET', 'POST'])
 def user():
@@ -132,6 +134,178 @@ def delete_user(id):
     database.delete_user(id)
     return redirect(url_for('user'))
 
+##################################################################################################
+@app.route('/patient', methods=['GET', 'POST'])
+def patient():
+    return render_template(
+        'patient/index.html',
+        has_patient=database.has_patient(session['user_id']),
+        patients=database.get_patient(session['is_admin'], session['user_id']),
+        is_admin=session['is_admin']
+    )
+
+@app.route('/patient/create', methods=['GET', 'POST'])
+def create_patient():
+
+    if (request.method == 'POST'):
+        database.insert_patient( request.form['patient_name'],  request.form['birth_date'], session['user_id'])
+    
+    return redirect(url_for('patient'))
+
+@app.route('/patient/delete/<id>', methods=['GET', 'POST'])
+def delete_patient(id):
+    database.delete_patient(id)
+    return redirect(url_for('patient'))
+
+@app.route('/patient/update/<id>', methods=['GET', 'POST'])
+def update_patient(id):
+    if (request.method == 'POST'):
+        database.update_patient(
+            id,
+            request.form['patient_name'],
+            request.form['birth_date'],
+        )
+    return redirect(url_for('patient'))
+
+##################################################################################################
+
+@app.route('/event', methods=['GET', 'POST'])
+def event():
+    return render_template(
+        'event/index.html',
+        events=database.get_events(),
+        user_id = session['user_id'],
+        is_admin = session['is_admin']
+    )
+
+@app.route('/event/create', methods=['GET', 'POST'])
+def create_event():
+    if (request.method == 'POST'):
+        database.insert_event(
+            request.form['event_description'],
+            request.form['is_input_event'],
+        )
+    return redirect(url_for('event'))
+
+@app.route('/event/delete/<id>', methods=['GET', 'POST'])
+def delete_event(id):
+    database.delete_event(id)
+    return redirect(url_for('event'))
+
+@app.route('/event/update/<id>', methods=['GET', 'POST'])
+def update_event(id):
+    if (request.method == 'POST'):
+        database.update_event(
+            id,
+            request.form['event_description'],
+            request.form['is_input_event'],
+        )
+
+    return redirect(url_for('event'))
+
+##################################################################################################
+@app.route('/caregiver', methods=['GET', 'POST'])
+def caregiver():
+    return render_template(
+        'caregiver/index.html',
+        caregivers=database.get_caregivers(session['is_admin'], session['user_id']),
+        patients=database.get_patient(True, session['user_id']),
+        user_id = session['user_id'],
+        is_admin = session['is_admin']
+    )
+
+@app.route('/caregiver/create', methods=['GET', 'POST'])
+def create_caregiver():
+    if (request.method == 'POST'):
+
+        if session['is_admin']:
+            patient_id = request.form['patient_id']
+        else:
+            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+
+        database.insert_caregiver(
+            patient_id,
+            request.form['name'],
+            request.form['start_shift'],
+            request.form['end_shift'],
+        )
+    return redirect(url_for('caregiver'))
+
+@app.route('/caregiver/delete/<id>', methods=['GET', 'POST'])
+def delete_caregiver(id):
+    database.delete_caregiver(id)
+    return redirect(url_for('caregiver'))
+
+@app.route('/caregiver/update/<id>', methods=['GET', 'POST'])
+def update_caregiver(id):
+    if (request.method == 'POST'):
+
+        if session['is_admin']:
+            patient_id = request.form['patient_id']
+        else:
+            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+
+        database.update_caregiver(
+            patient_id,
+            request.form['name'],
+            request.form['start_shift'],
+            request.form['end_shift'],
+        )
+
+    return redirect(url_for('caregiver'))
+
+##################################################################################################
+
+@app.route('/historic', methods=['GET', 'POST'])
+def historic():
+    return render_template(
+        'historic/index.html'
+    )
+
+##################################################################################################
+@app.route('/alarm', methods=['GET', 'POST'])
+def alarm():
+    return render_template(
+        'alarm/index.html',
+        alarms=database.get_alarms(session['is_admin'], session['user_id']),
+        patients=database.get_patient(True, session['user_id']),
+        events=database.get_events(),
+        user_id = session['user_id'],
+        is_admin = session['is_admin']
+    )
+
+@app.route('/alarm/create', methods=['GET', 'POST'])
+def create_alarm():
+    if (request.method == 'POST'):
+        if session['is_admin']:
+            patient_id = request.form['patient_id']
+        else:
+            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+
+        database.insert_alarm(
+            patient_id,
+            request.form['event_id'],
+            request.form['alarm_time'],
+        )
+    return redirect(url_for('alarm'))
+
+@app.route('/alarm/delete/<id>', methods=['GET', 'POST'])
+def delete_alarm(id):
+    database.delete_alarm(id)
+    return redirect(url_for('alarm'))
+
+@app.route('/alarm/update/<id>', methods=['GET', 'POST'])
+def update_alarm(id):
+    if (request.method == 'POST'):
+        database.update_alarm(
+            id,
+            request.form['event_description'],
+            request.form['is_input_event'],
+        )
+
+    return redirect(url_for('alarm'))
+
+##################################################################################################
 @app.route('/device', methods=['GET', 'POST'])
 def device():
     return render_template(
@@ -164,50 +338,8 @@ def update_device(id):
         )
     return redirect(url_for('device'))
 
-@app.route('/follow', methods=['GET', 'POST'])
-def follow():
-    return render_template(
-        'follow/index.html',
-        follows=database.get_follow(session['is_admin'], session['user_id']),
-    )
-
-@app.route('/follow/create', methods=['GET', 'POST'])
-def create_follow():
-    if (request.method == 'POST'):
-        database.insert_follow(
-            request.form['nome'],
-            request.form['datan'],
-            request.form['acomp'],
-            session['user_id'],
-        )
-    return redirect(url_for('follow'))
-
-@app.route('/follow/delete/<id>', methods=['GET', 'POST'])
-def delete_follow(id):
-    database.delete_follow(id)
-    return redirect(url_for('follow'))
-
-@app.route('/follow/update/<id>', methods=['GET', 'POST'])
-def update_follow(id):
-    if (request.method == 'POST'):
-        database.update_follow(
-            id,
-            request.form['nome'],
-            request.form['datan'],
-            request.form['acomp'],
-        )
-    return redirect(url_for('follow'))
-
-@app.route('/hist/<id>', methods=['GET', 'POST'])
-def hist(id):
-    return render_template(
-        'hist/index.html',
-        onwname=database.get_own_name(id),
-        logs=database.get_log(id),
-    )
-
 @app.route('/device/edit/<id>', methods=['GET', 'POST'])
-def devide_edit(id):
+def edit_device(id):
     if (request.method == 'GET'):
         return render_template(
             'device/edit.html',
@@ -226,33 +358,23 @@ def devide_edit(id):
         return redirect(url_for('device'))
         pass
 
-"""
-### Interface de configuração do dispositivo em REST
+@app.route('/device/data/<guid>', methods=['GET', 'POST'])
+def device_data(guid):
 
-# Le a aconfiguração do dispositivo 
-curl -X GET -H "Content-Type: application/json" -d '{"guid": "cd4c9776-5caa-48c6-9937-b06948310a09"}' http://localhost:5000/device/rest
-
-# posta um evento
-curl -X POST -H "Content-Type: application/json" -d '{"evento": 1, "guid": "cd4c9776-5caa-48c6-9937-b06948310a09"}' http://localhost:5000/device/rest
-"""
-@app.route('/device/rest', methods=['GET', 'POST'])
-def device_rest():
-    data = request.get_json()
-    if 'guid' not in data:
-        return jsonify({"result": "GUID MISSING"})
-
-    guid = data['guid']
     if (request.method == 'GET'):
-        devdat = database.get_devguid(guid)
+        device_data = database.get_devguid(guid)
 
-        if devdat is None:
+        if device_data is None:
             return jsonify({"guid": guid, "result": "GUID NOT FOUND"})
+        
+        device_data_json = jsonify({"guid": device_data[0], "alarme1_tme": device_data[1], "alarme1_log": device_data[2], "alarme1_evt": device_data[3],
+            "alarme2_tme": device_data[4], "alarme2_log": device_data[5], "alarme2_evt": device_data[6], "alarme3_tme": device_data[7],
+            "alarme3_log": device_data[8], "alarme3_evt": device_data[9], "alarme4_tme": device_data[10], "alarme4_log": device_data[11],
+            "alarme4_evt": device_data[12], "alarme5_tme": device_data[13], "alarme5_log": device_data[14], "alarme5_evt": device_data[15],
+            "evento1_log": device_data[16], "evento2_log": device_data[17], "evento3_log": device_data[18]})
 
-        return jsonify({"guid": devdat[0], "alarme1_tme": devdat[1], "alarme1_log": devdat[2], "alarme1_evt": devdat[3],
-            "alarme2_tme": devdat[4], "alarme2_log": devdat[5], "alarme2_evt": devdat[6], "alarme3_tme": devdat[7],
-            "alarme3_log": devdat[8], "alarme3_evt": devdat[9], "alarme4_tme": devdat[10], "alarme4_log": devdat[11],
-            "alarme4_evt": devdat[12], "alarme5_tme": devdat[13], "alarme5_log": devdat[14], "alarme5_evt": devdat[15],
-            "evento1_log": devdat[16], "evento2_log": devdat[17], "evento3_log": devdat[18]})
+        print(sizeof(device_data_json))
+        return device_data_json
 
     if (request.method == 'POST'):
         devlog = database.get_devlog(guid)
@@ -270,17 +392,11 @@ def device_rest():
 
         #return jsonify({"guid": guid, "id": devlog[0], "STR": devlog[evento], "result": "OK"})
         return jsonify({"guid": guid, "result": "OK"})
-
-@app.route('/request-alarm-schedule/<guid>', methods=['GET'])
-def request_alarm_schedule(guid):
-    return database.get_alarms(guid)
-
+    
 if __name__ == '__main__':
+
     DEBUG   = True
     HOST_IP = "192.168.1.7"
     PORT    = 3000
 
-    if DEBUG:
-        app.run(host=HOST_IP, port=PORT, debug=DEBUG)
-    else:
-        app.run(port=PORT)
+    app.run(host=HOST_IP, port=PORT, debug=DEBUG)

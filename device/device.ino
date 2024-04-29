@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 
 const int guid = 1;
 
@@ -11,18 +12,13 @@ int pin_led_wifi = 22;
 HTTPClient http;
 int httpCode;
 
-String alarms[5];
-String events[5];
-
 void connect_to_wifi()
 {
-  WiFi.mode(WIFI_STA); //Optional
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  Serial.println("\nConnecting");
 
   while(WiFi.status() != WL_CONNECTED)
   {
-    Serial.print(".");
     digitalWrite(pin_led_wifi, HIGH);
     delay(1000);
     digitalWrite(pin_led_wifi, LOW);
@@ -32,10 +28,6 @@ void connect_to_wifi()
   {
     digitalWrite(pin_led_wifi, HIGH);
   }
-
-  Serial.println("\nConnected to the WiFi network");
-  Serial.print("Local ESP32 IP: ");
-  Serial.println(WiFi.localIP());
 }
 
 void check_wifi_connection()
@@ -44,30 +36,57 @@ void check_wifi_connection()
   if (WiFi.status() != WL_CONNECTED)
   {
     digitalWrite(pin_led_wifi, LOW);
-    Serial.print("Wifi not connected.");
 
     // try to connect again if necessary
     connect_to_wifi();
   }
 }
 
-void request_alarm_schedule()
+void request_device_data()
 {
-  http.begin("http://192.168.1.7:3000/request-alarm-schedule/1");
+  http.begin("http://192.168.1.7:3000/device/data/" + guid);
   httpCode = http.GET();
 
   if (httpCode > 0) 
   {
+    StaticJsonDocument<200> device_data;
+
     String payload = http.getString();
-    Serial.println("HTTP Code: ");
-    Serial.println(payload);
-  }
-  
-  else 
-  {
-    Serial.println("Error on HTTP request");
+    
+    char device_data_json[payload.length()];
+
+    payload.toCharArray(device_data_json, payload.length());
+
+    // Deserialize the JSON document
+    DeserializationError error = deserializeJson(device_data, device_data_json);
+
+    // Test if parsing succeeds.
+    if (error) 
+    {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.f_str());
+      return;
+    }
+
+    
   }
 }
+
+void trigger_alarm()
+{
+  if(/* current time matches one of the alarms by a margin */ false)
+  {
+    /* activate buzzer and led */
+
+    while(/* alarm button not hit */ false)
+  	{
+      continue;
+    }
+
+    /* deactivate buzzer and led */
+  }
+}
+
 /****************************************************************************************************************/
 void setup() 
 {
@@ -85,5 +104,8 @@ void setup()
 void loop() 
 {
   check_wifi_connection();
-  request_alarm_schedule();
+
+  request_device_data();
+
+  trigger_alarm();
 }

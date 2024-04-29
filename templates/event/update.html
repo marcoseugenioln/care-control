@@ -1,0 +1,25 @@
+<tr>
+    <form action="/event/update/{{ id }}" method="post">
+        <td><label>{{ id }}</label></td>
+
+        <td><input type="text" class="text-field" name="event_description" value="{{ event_description }}"></td>
+
+        <td>
+            <select class="combo-box" name="is_input_event">
+                {% if is_input_event ==1 %}
+                    <option value="0">Alarme</option>
+                    <option value="1" selected>Registro</option>
+                {% else %}
+                    <option value="0" selected>Alarme</option>
+                    <option value="1">Registro</option>
+                {% endif %}
+            </select>
+        </td>
+        
+        <td><input type="submit" class="btn" value="Atualizar"></td>
+    </form>
+    <form action="/event/delete/{{ id }}" method="post">
+        <td><input type="submit" class="btn" value="Apagar"></td>
+    </form>
+
+</tr>

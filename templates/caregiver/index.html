@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Cuidadores</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+    <h3>Cuidadores</h3>
+
+    <div class="index-div"></div>
+
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Nome</label></td>
+                <td><label class="text-field">Turno Início</label></td>
+                <td><label class="text-field">Turno Fim</label></td>
+                {% if is_admin %}
+                    <td><label class="text-field">Paciente</label></td>
+                {% endif %}
+            </tr>
+            
+            {% for id, patient_id, name, start_shift, end_shift in caregivers %}
+                {% include '/caregiver/update.html'%}
+            {% endfor %}
+            
+        </table>
+    </div>
+
+
+    {% include '/caregiver/create.html' %} 
+    
+</body>
+ 
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+        <title>Pacientes</title>
+    </head>
+    <body>
+        {% include 'header/index.html'%}
+        <div class="index-div">
+            <table>
+                <tr>
+                    <td><label class="text-field">ID</label></td>
+                    <td><label class="text-field">Paciente</label></td>
+                    <td><label class="text-field">Data de Nascimento</label></td>
+                </tr>
+                {% for id, patient_name, birth_date in patients %}
+                    {% include '/patient/update.html'%}
+                {% endfor %}
+            </table>
+        </div>
+
+        {% if is_admin %}
+            {% include '/patient/create.html'%}
+        {% else %}
+            {% if not has_patient %}
+                {% include '/patient/create.html'%}
+            {% endif %}
+        {% endif %}
+    </body>
+</html>
