@@ -1,0 +1,14 @@
+<div class="create-div">
+    <hr>
+    <h3>Inserir Paciente</h3>
+    <table>
+        <tr>
+            <form action="/patient/create">
+                <td><input type="text" class="text-field" name="patient_name" placeholder="Nome do paciente"></td>
+                <td><input type="date" class="text-field" name="birth_date" value="{{ birth_date }}"></td>
+
+                <td><input type="submit" class="btn" value="Cadastrar" formmethod="post"></td>
+            </form>
+        </tr>
+    </table>
+</div>

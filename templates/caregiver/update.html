@@ -1,0 +1,28 @@
+<tr>
+    <form action="/caregiver/update/{{ id }}" method="post">
+
+        <td><label>{{ id }}</label></td>
+        <td><input type="text" class="text-field" name="name" value="{{ name }}"></td>
+        <td><input type="time" class="text-field" name="start_shift" value="{{ start_shift }}"></td>
+        <td><input type="time" class="text-field" name="end_shift" value="{{ end_shift }}"></td>
+
+        {% if is_admin %}
+            <td><select class="combo-box" name="patient_id">
+                {% for pid, pname, birth in patients %}
+                    {% if pid == patient_id %}
+                        <option value="{{ pid }}" selected>{{ pname }}</option>
+                    {% else %}
+                        <option value="{{ pid }}">{{ pname }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></td>
+        {% endif %}
+        
+        <td><input type="submit" class="btn" value="Atualizar"></td>
+    </form>
+
+    <form action="/caregiver/delete/{{ id }}" method="post">
+        <td><input type="submit" class="btn" value="Apagar"></td>
+    </form>
+
+</tr>

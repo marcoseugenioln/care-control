@@ -1,60 +1,79 @@
--- usuario definition
+-- user table definition
 CREATE TABLE IF NOT EXISTS user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	email TEXT(300),
+	email TEXT(300) UNIQUE,
 	password TEXT(64),
-	is_admin INTEGER DEFAULT (0),
-	CONSTRAINT usuario_un UNIQUE (email)
+	is_admin INTEGER DEFAULT (0)
 );
 
-CREATE TABLE IF NOT EXISTS acompanhado (
+-- caregiver table definition
+CREATE TABLE IF NOT EXISTS caregiver (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER,
-    nome TEXT(120) NOT NULL,
-    datanasc TEXT(10),
-    acompanhante TEXT(200),
-	CONSTRAINT acompanhado_un UNIQUE (nome),
-	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user(id)
+	patient_id INTEGER,
+	name TEXT(120) NOT NULL UNIQUE,
+
+	start_shift TIME,
+	end_shift TIME,
+
+	FOREIGN KEY (user_id) REFERENCES user(id),
+	FOREIGN KEY (patient_id) REFERENCES patient(id)
 );
 
-CREATE TABLE IF NOT EXISTS historico (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	acompanhado_id INTEGER,
-    data TEXT(19),
-    log TEXT(250) NOT NULL,
-	CONSTRAINT acompanhado_fk FOREIGN KEY (acompanhado_id) REFERENCES acompanhado(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS dispositivo (
+-- patient table definition
+CREATE TABLE IF NOT EXISTS patient (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER,
-	acompanhando_id INTEGER,
-	guid TEXT(36) NOT NULL,
-	nome TEXT(50) NOT NULL,
-	alarme1_tme TEXT(5),
-	alarme1_log TEXT(50),
-	alarme1_evt INTEGER(1),
-	alarme2_tme TEXT(5),
-	alarme2_log TEXT(50),
-	alarme2_evt INTEGER(1),
-	alarme3_tme TEXT(5),
-	alarme3_log TEXT(50),
-	alarme3_evt INTEGER(1),
-	alarme4_tme TEXT(5),
-	alarme4_log TEXT(50),
-	alarme4_evt INTEGER(1),
-	alarme5_tme TEXT(5),
-	alarme5_log TEXT(50),
-	alarme5_evt INTEGER(1),
-	evento1_log TEXT(50),
-	evento2_log TEXT(50),
-	evento3_log TEXT(50),
-	CONSTRAINT dispositivo_un UNIQUE (guid),
-	CONSTRAINT dispositivo_un2 UNIQUE (user_id, nome),
-	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES user(id),
-	CONSTRAINT acompanhado_fk FOREIGN KEY (acompanhando_id) REFERENCES acompanhado(id)
+    name TEXT(120) NOT NULL UNIQUE,
+    birth DATE,
+
+	FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
+-- alarm table definition
+CREATE TABLE IF NOT EXISTS alarm (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	patient_id INTEGER,
+	event_id INTEGER,
+	alarm_time TIME,
+
+	FOREIGN KEY (patient_id) REFERENCES patient(id),
+	FOREIGN KEY (event_id) REFERENCES event(id)
+);
+
+-- event table definition
+CREATE TABLE IF NOT EXISTS event (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	description TEXT(120) UNIQUE,
+	is_input INTEGER DEFAULT (0)
+);
+
+-- historic table definition
+CREATE TABLE IF NOT EXISTS historic (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	patient_id INTEGER,
+    log_datetime DATETIME,
+	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
+);
+
+-- device table definition
+CREATE TABLE IF NOT EXISTS device (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user_id INTEGER,
+	patient_id INTEGER,
+
+	name TEXT(100) NOT NULL,
+	
+	event_1_id INTEGER,
+	event_2_id INTEGER,
+	event_3_id INTEGER,
+
+	FOREIGN KEY (user_id) REFERENCES user(id),
+	FOREIGN KEY (patient_id) REFERENCES patient(id),
+	FOREIGN KEY (event_1_id) REFERENCES event(id),
+	FOREIGN KEY (event_2_id) REFERENCES event(id),
+	FOREIGN KEY (event_3_id) REFERENCES event(id)
+);
 
 --########################################################
 --#          DADOS DE "REAIS" PARA PRODUÇÃO              #
@@ -65,4 +84,19 @@ INSERT OR IGNORE INTO user (email, password, is_admin) VALUES
 ('marcos@root.com', 'root', 1),
 ('castilho@root.com', 'root', 1),
 ('user@user.com', 'user', 0),
-('caco@alternativac.com.br', 'EstudoUnivesp123', 1);
+('caco@alternativac.com.br', 'EstudoUnivesp123', 0);
+
+INSERT OR IGNORE INTO event (description, is_input) VALUES
+('Micção ligado', 1),
+('Defecação', 1),
+('Aspiração de tráqueo', 1),
+('Drenagem', 1),
+('Paciente Adormeceu', 1),
+('Paciente Acordou', 1),
+('Remedio A', 0),
+('Remedio B', 0),
+('Remedio C', 0),
+('Remedio D', 0),
+('Remedio E', 0),
+('Fisioterapia', 0);
+

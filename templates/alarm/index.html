@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Cuidadores</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+    <h3>Alarmes</h3>
+
+    <div class="index-div"></div>
+
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Evento</label></td>
+                <td><label class="text-field">Horário</label></td>
+                
+                {% if is_admin %}
+                    <td><label class="text-field">Paciente</label></td>
+                {% endif %}
+            </tr>
+            
+            {% for id, patient_id, event_id, alarm_time in alarms %}
+                {% include '/alarm/update.html'%}
+            {% endfor %}
+            
+        </table>
+    </div>
+
+
+    {% include '/alarm/create.html' %} 
+    
+</body>
+ 
+</html>

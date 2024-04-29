@@ -1,0 +1,14 @@
+<tr>
+    <form action="/patient/update/{{ id }}" method="post">
+        
+        <td><label>{{ id }}</label></td>
+
+        <td><input type="text" class="text-field" name="patient_name" value="{{ patient_name }}"></td>
+        <td><input type="date" class="text-field" name="birth_date" value="{{ birth_date }}"/></td>
+        
+        <td><input type="submit" class="btn" value="Atualizar"></td>
+    </form>
+    <form action="/patient/delete/{{ id }}" method="post">
+        <td><input type="submit" class="btn" value="Apagar"></td>
+    </form>
+</tr>

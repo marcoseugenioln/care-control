@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Eventos</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+    <h3>Eventos</h3>
+
+    <div class="index-div"></div>
+
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                <td><label class="text-field">Descrição</label></td>
+                <td><label class="text-field">Tipo</label></td>
+            </tr>
+            
+            {% for id, event_description, is_input_event in events %}
+                {% if is_admin %}
+                    {% include '/event/update.html'%}
+                {% else %}
+                    <tr>
+                        <td><label class="text-field">{{ id }}</label></td>
+                        <td><label class="text-field">{{ event_description }}</label></td>
+
+                        {% if is_input_event == 1 %}
+                            <td><label class="text-field">Registro</label></td>
+                        {% else %}
+                            <td><label class="text-field">Alarme</label></td>
+                        {% endif %}
+                    </tr>
+                {% endif %} 
+            {% endfor %}
+            
+        </table>
+    </div>
+
+    {% if is_admin %}
+        {% include '/event/create.html' %}
+    {% endif %}  
+    
+</body>
+ 
+</html>

@@ -1,0 +1,25 @@
+<div class="create-div">
+    <hr>
+    <h3>Inserir Cuidador</h3>
+    <table>
+        <tr>
+            <form action="/caregiver/create">
+
+                <td><input type="text" class="text-field" name="name" placeholder="Nome"></td>
+                <td><input type="time" class="text-field" name="start_shift"></td>
+                <td><input type="time" class="text-field" name="end_shift"></td>
+
+                {% if is_admin %}
+                    <td><select class="combo-box" name="patient_id">
+                        {% for id, name, birth in patients %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select></td>
+                {% endif %}
+        
+                <td><input type="submit" class="btn" value="Cadastrar" formmethod="post"></td>
+            </form>
+        </tr>
+    </table>
+</div>
+
