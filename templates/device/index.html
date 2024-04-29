@@ -13,15 +13,29 @@
         <table>
             <tr>
                 <td><label class="text-field">ID</label></td>
-                <td><label class="text-field">Dispositivo</label></td>
-                <td><label class="text-field">GUID</label></td>
+                <td><label class="text-field">Nome</label></td>
+                {% if is_admin %}
+                    <td><label class="text-field">Paciente</label></td>
+                {% endif %}
+                <td><label class="text-field">Evento 1</label></td>
+                <td><label class="text-field">Evento 2</label></td>
+                <td><label class="text-field">Evento 3</label></td>
             </tr>
-            {% for id, nome, guid in devices %}
+
+            {% for id, patient_id, name, event_button_1, event_button_2, event_button_3 in devices %}
                 {% include '/device/update.html'%}
             {% endfor %}
+
         </table>
     </div>
-    {% include '/device/create.html' %}
+
+    {% if is_admin %}
+        {% include '/device/create.html'%}
+    {% else %}
+        {% if not has_device %}
+            {% include '/device/create.html'%}
+        {% endif %}
+    {% endif %}
 </body>
  
 </html>

@@ -221,7 +221,7 @@ def create_caregiver():
         if session['is_admin']:
             patient_id = request.form['patient_id']
         else:
-            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+            patient_id = database.get_patient_id_from_user_id(session['user_id'])
 
         database.insert_caregiver(
             patient_id,
@@ -243,7 +243,7 @@ def update_caregiver(id):
         if session['is_admin']:
             patient_id = request.form['patient_id']
         else:
-            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+            patient_id = database.get_patient_id_from_user_id(session['user_id'])
 
         database.update_caregiver(
             patient_id,
@@ -254,13 +254,7 @@ def update_caregiver(id):
 
     return redirect(url_for('caregiver'))
 
-##################################################################################################
 
-@app.route('/historic', methods=['GET', 'POST'])
-def historic():
-    return render_template(
-        'historic/index.html'
-    )
 
 ##################################################################################################
 @app.route('/alarm', methods=['GET', 'POST'])
@@ -280,7 +274,7 @@ def create_alarm():
         if session['is_admin']:
             patient_id = request.form['patient_id']
         else:
-            patient_id = database.get_pateint_id_from_user_id(session['user_id'])
+            patient_id = database.get_patient_id_from_user_id(session['user_id'])
 
         database.insert_alarm(
             patient_id,
@@ -308,18 +302,34 @@ def update_alarm(id):
 ##################################################################################################
 @app.route('/device', methods=['GET', 'POST'])
 def device():
+
+    if session['is_admin']:
+        has_device=True
+    else:
+        has_device=database.has_device(session['user_id'])
+    
     return render_template(
         'device/index.html',
-        devices=database.get_devices(session['is_admin'], session['user_id']),
+        devices=database.get_device(session['is_admin'], session['user_id']),
+        patients=database.get_patient(True, session['user_id']),
+        events=database.get_events(),
+        user_id=session['user_id'],
+        is_admin=session['is_admin'],
+        has_device=has_device,
     )
 
 @app.route('/device/create', methods=['GET', 'POST'])
 def create_device():
     if (request.method == 'POST'):
+
+        if session['is_admin']:
+            patient_id = request.form['patient_id']
+        else:
+            patient_id = database.get_patient_id_from_user_id(session['user_id'])
+
         database.insert_device(
-            request.form['nome'],
-            request.form['guid'],
-            session['user_id'],
+            patient_id,
+            request.form['name'],
         )
     return redirect(url_for('device'))
 
@@ -331,72 +341,40 @@ def delete_device(id):
 @app.route('/device/update/<id>', methods=['GET', 'POST'])
 def update_device(id):
     if (request.method == 'POST'):
+
+        if session['is_admin']:
+            patient_id = request.form['patient_id']
+        else:
+            patient_id = database.get_patient_id_from_user_id(session['user_id'])
+
         database.update_device(
             id,
-            request.form['nome'],
-            request.form['guid'],
+            patient_id,
+            request.form['name'],
+            request.form['event_button_1'],
+            request.form['event_button_2'],
+            request.form['event_button_3'],
         )
     return redirect(url_for('device'))
 
-@app.route('/device/edit/<id>', methods=['GET', 'POST'])
-def edit_device(id):
-    if (request.method == 'GET'):
-        return render_template(
-            'device/edit.html',
-            folist=database.get_folist(session['is_admin'], session['user_id']),
-            devdat=database.get_devdet(id),
-        )
-    if (request.method == 'POST'):
-        database.update_devdet(
-            id, session['user_id'], request.form['acompanhando_id'], request.form['alarme1_tme'],
-            request.form['alarme1_log'], request.form['alarme1_evt'], request.form['alarme2_tme'],
-            request.form['alarme2_log'], request.form['alarme2_evt'], request.form['alarme3_tme'],
-            request.form['alarme3_log'], request.form['alarme3_evt'], request.form['alarme4_tme'],
-            request.form['alarme4_log'], request.form['alarme4_evt'], request.form['alarme5_tme'],
-            request.form['alarme5_log'], request.form['alarme5_evt'], request.form['evento1_log'],
-            request.form['evento2_log'], request.form['evento3_log'] )
-        return redirect(url_for('device'))
-        pass
-
 @app.route('/device/data/<guid>', methods=['GET', 'POST'])
 def device_data(guid):
-
-    if (request.method == 'GET'):
-        device_data = database.get_devguid(guid)
-
-        if device_data is None:
-            return jsonify({"guid": guid, "result": "GUID NOT FOUND"})
-        
-        device_data_json = jsonify({"guid": device_data[0], "alarme1_tme": device_data[1], "alarme1_log": device_data[2], "alarme1_evt": device_data[3],
-            "alarme2_tme": device_data[4], "alarme2_log": device_data[5], "alarme2_evt": device_data[6], "alarme3_tme": device_data[7],
-            "alarme3_log": device_data[8], "alarme3_evt": device_data[9], "alarme4_tme": device_data[10], "alarme4_log": device_data[11],
-            "alarme4_evt": device_data[12], "alarme5_tme": device_data[13], "alarme5_log": device_data[14], "alarme5_evt": device_data[15],
-            "evento1_log": device_data[16], "evento2_log": device_data[17], "evento3_log": device_data[18]})
-
-        print(sizeof(device_data_json))
-        return device_data_json
-
-    if (request.method == 'POST'):
-        devlog = database.get_devlog(guid)
-        if devlog is None:
-            return jsonify({"guid": guid, "result": "GUID NOT FOUND"})
-
-        if 'evento' not in data:
-            return jsonify({"guid": guid, "result": "EVENT NOT FOUND"})
-
-        evento = data['evento']
-        if evento < 1 or evento > 3:
-            return jsonify({"guid": guid, "result": "WRONG EVENT"})
-
-        database.save_log(devlog[0], "Evento: " + devlog[evento])
-
-        #return jsonify({"guid": guid, "id": devlog[0], "STR": devlog[evento], "result": "OK"})
-        return jsonify({"guid": guid, "result": "OK"})
+    logger.info("Acquiring device data")
     
+##################################################################################################
+
+@app.route('/historic', methods=['GET', 'POST'])
+def historic():
+
+    return render_template(
+        'historic/index.html',
+        historic=database.get_historic(session['is_admin'], session['user_id'])
+    )
+
 if __name__ == '__main__':
 
     DEBUG   = True
-    HOST_IP = "192.168.1.7"
+    HOST_IP = "127.0.0.1"
     PORT    = 3000
 
     app.run(host=HOST_IP, port=PORT, debug=DEBUG)

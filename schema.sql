@@ -53,26 +53,25 @@ CREATE TABLE IF NOT EXISTS historic (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	patient_id INTEGER,
     log_datetime DATETIME,
+	log_message TEXT(300),
 	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
 );
 
 -- device table definition
 CREATE TABLE IF NOT EXISTS device (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	user_id INTEGER,
 	patient_id INTEGER,
 
 	name TEXT(100) NOT NULL,
 	
-	event_1_id INTEGER,
-	event_2_id INTEGER,
-	event_3_id INTEGER,
+	event_button_1 INTEGER,
+	event_button_2 INTEGER,
+	event_button_3 INTEGER,
 
-	FOREIGN KEY (user_id) REFERENCES user(id),
 	FOREIGN KEY (patient_id) REFERENCES patient(id),
-	FOREIGN KEY (event_1_id) REFERENCES event(id),
-	FOREIGN KEY (event_2_id) REFERENCES event(id),
-	FOREIGN KEY (event_3_id) REFERENCES event(id)
+	FOREIGN KEY (event_button_1) REFERENCES event(id),
+	FOREIGN KEY (event_button_2) REFERENCES event(id),
+	FOREIGN KEY (event_button_3) REFERENCES event(id)
 );
 
 --########################################################
@@ -87,7 +86,7 @@ INSERT OR IGNORE INTO user (email, password, is_admin) VALUES
 ('caco@alternativac.com.br', 'EstudoUnivesp123', 0);
 
 INSERT OR IGNORE INTO event (description, is_input) VALUES
-('Micção ligado', 1),
+('Micção', 1),
 ('Defecação', 1),
 ('Aspiração de tráqueo', 1),
 ('Drenagem', 1),
