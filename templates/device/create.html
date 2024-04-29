@@ -3,11 +3,23 @@
         <tr>
             <h1>Cadastrar Dispositivo</h1>
             <form action="/device/create">
-                <td><input type="text" class="text-field" name="nome" placeholder="Nome do dispositivo"></td>
-                <td><input type="text" class="text-field" name="guid" placeholder="GUID de acesso"></td>
+
+                <td><input type="text" class="text-field" name="name" value="{{ name }}"></td>
+
+                {% if is_admin %}
+                    <td><select class="combo-box" name="patient_id">
+                        {% for pid, pname, birth in patients %}
+                            {% if pid == patient_id %}
+                                <option value="{{ pid }}" selected>{{ pname }}</option>
+                            {% else %}
+                                <option value="{{ pid }}">{{ pname }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select></td>
+                {% endif %}
+
                 <td><input type="submit" class="btn" value="Cadastrar" formmethod="post"></td>
             </form>
         </tr>
     </table>
 </div>
-

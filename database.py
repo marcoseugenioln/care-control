@@ -93,27 +93,47 @@ class Database():
         self.query.execute(f"UPDATE user SET email = '{email}', password = '{password}', is_admin = {is_admin} WHERE id == {user_id};")
         self.connection.commit()
 
-    def get_devices(self, isadm, uid):
-        self.query.execute("SELECT id, nome, guid FROM device WHERE (? OR user_id = ?);", (isadm, uid))
-        logger.info(f"SELECT id, user_id, nome, guid FROM device WHERE ({isadm} OR user_id = {uid});")
-        return self.query.fetchall()
     ##################################################################################################
+    def get_device(self, is_admin, user_id):
+        if bool(is_admin):
+            self.query.execute(f"SELECT id, patient_id, name, event_button_1, event_button_2, event_button_3 FROM device;")
+            logger.info(f"SELECT id, patient_id, name, event_button_1, event_button_2, event_button_3 FROM device;")
+            return self.query.fetchall()
+        else:
+            patient_id = self.get_patient_id_from_user_id(user_id)
 
-    def insert_device(self, device: str, guid: str, uid: int) -> bool:
-        self.query.execute("INSERT OR IGNORE INTO device(user_id, nome, guid) values (?, ?, ?);", (uid, device, guid))
-        logger.info(f"INSERT OR IGNORE INTO device(user_id, nome, guid) values ({uid}, {device}, {guid});")
+            self.query.execute(f"SELECT id, patient_id, name, event_button_1, event_button_2, event_button_3 FROM device WHERE patient_id = {patient_id};")
+            logger.info(f"SELECT id, patient_id, name, event_button_1, event_button_2, event_button_3 FROM device WHERE patient_id = {patient_id};")
+            return self.query.fetchall()
+        
+    def insert_device(self, patient_id, name) -> bool:
+        self.query.execute(f"INSERT OR IGNORE INTO device(patient_id, name) values ({patient_id}, '{name}');")
+        logger.info(f"INSERT OR IGNORE INTO device(patient_id, name) values ({patient_id}, '{name}');")
         self.connection.commit()
         return True
 
     def delete_device(self, id):
-        self.query.execute("DELETE FROM device WHERE id = ?;", ((id,)))
+        self.query.execute(f"DELETE FROM device WHERE id = {id};")
         logger.info(f"DELETE FROM device WHERE id = {id};")
         self.connection.commit()
 
-    def update_device(self, id, nome, guid):
-        self.query.execute("UPDATE device SET nome = ?, guid = ? WHERE id =?;", (nome, guid, id))
-        logger.info(f"UPDATE device SET nome = {nome}, guid = {guid} WHERE id = {id};")
+    def update_device(self, id, patient_id, name, event_button_1, event_button_2, event_button_3):
+
+        self.query.execute(f"UPDATE device SET patient_id = {patient_id}, name = '{name}', event_button_1 = {event_button_1}, event_button_2 = {event_button_2}, event_button_3 = {event_button_3} WHERE id = {id};")
+        logger.info(f"UPDATE device SET patient_id = {patient_id}, name = '{name}', event_button_1 = {event_button_1}, event_button_2 = {event_button_2}, event_button_3 = {event_button_3} WHERE id = {id};")
         self.connection.commit()
+
+    def has_device(self, user_id):
+
+        patient_id = self.get_patient_id_from_user_id(user_id)
+
+        self.query.execute(f"SELECT id, name, event_button_1, event_button_2, event_button_3 FROM device WHERE patient_id = {patient_id};")
+        logger.info(f"SELECT id, name, event_button_1, event_button_2, event_button_3 FROM device device patient_id = {patient_id};")
+
+        if self.query.fetchone():
+            return True
+        else:
+            return False
     ##################################################################################################
 
     def get_patient(self, is_admin, user_id):
@@ -153,71 +173,22 @@ class Database():
         self.connection.commit()
 
     ##################################################################################################
-    def save_log(self, id, logstr):
-        agora = datetime.now()
-        agorastr = agora.strftime("%d-%m-%Y %H:%M:%S")
-        self.query.execute(
-            "INSERT OR IGNORE INTO historico(patient_id, data, log) values (?, ?, ?);",
-            (id, agorastr, logstr))
-        self.connection.commit()
+        
+    def get_historic(self, is_admin, user_id):
+        if bool(is_admin):
+            self.query.execute("SELECT id, patient_id, log_datetime, log_message FROM historic;")
+            logger.info("SELECT id, patient_id, log_datetime, log_message FROM historic;")
+            return self.query.fetchall()
+        else:
+            patient_id = self.get_patient_id_from_user_id(user_id)
 
-    def get_own_name(self, id):
-        self.query.execute("SELECT nome || ' - ' || datanasc FROM patient WHERE id = ?;", ((id,)))
-        return self.query.fetchone()[0]
+            self.query.execute(f"SELECT id, patient_id, log_datetime, log_message FROM historic WHERE patient_id = {patient_id};")
+            logger.info(f"SELECT id, patient_id, log_datetime, log_message FROM patient WHERE patient_id = {patient_id};")
+            return self.query.fetchall()
+        
+    def log_message(self):
+        logger.info("log message")
 
-    def get_log(self, id):
-        self.query.execute("SELECT id, data, log FROM historico WHERE patient_id = ?;", ((id,)))
-        logger.info(f"SELECT id, data, log FROM historico WHERE patient_id = {id};")
-        return self.query.fetchall()
-
-    def get_folist(self, isadm, uid):
-        self.query.execute("SELECT id, nome || ' - ' || datanasc AS nome FROM patient WHERE (? OR user_id = ?);", (isadm, uid))
-        logger.info(f"SELECT id, nome || ' - ' || datanasc FROM patient WHERE ({isadm} OR user_id = {uid});")
-        return self.query.fetchall()
-
-    def get_devdet(self, id):
-        logger.info(f"SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM device WHERE id =  {id});")
-        self.query.execute("SELECT id, user_id, acompanhando_id, guid, nome, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log FROM device WHERE id = ?;", ((id, )))
-        return self.query.fetchall()
-
-    def update_devdet(self, id, user_id, acompanhando_id, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme,
-                      alarme2_log, alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log,
-                      alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log):
-
-        self.query.execute(
-            "UPDATE device SET acompanhando_id = ?, alarme1_tme = ?, alarme1_log = ?, alarme1_evt = ?,"
-            " alarme2_tme = ?, alarme2_log = ?, alarme2_evt = ?, alarme3_tme = ?, alarme3_log = ?, alarme3_evt = ?,"
-            " alarme4_tme = ?, alarme4_log = ?, alarme4_evt = ?, alarme5_tme = ?, alarme5_log = ?, alarme5_evt = ?,"
-            " evento1_log = ?, evento2_log = ?, evento3_log = ? WHERE id = ?",
-            (acompanhando_id, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt,
-             alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme, alarme5_log,
-             alarme5_evt, evento1_log, evento2_log, evento3_log, id))
-        logger.info(f"UPDATE device SET acompanhando_id = { acompanhando_id }, alarme1_tme = { alarme1_tme },"
-                    " alarme1_log = { alarme1_log }, alarme1_evt = { alarme1_evt }, alarme2_tme = { alarme2_tme },"
-                    " alarme2_log = { alarme2_log }, alarme2_evt = { alarme2_evt }, alarme3_tme = { alarme3_tme },"
-                    " alarme3_log = { alarme3_log }, alarme3_evt = { alarme3_evt }, alarme4_tme = { alarme4_tme },"
-                    " alarme4_log = { alarme4_log }, alarme4_evt = { alarme4_evt }, alarme5_tme = { alarme5_tme },"
-                    " alarme5_log = { alarme5_log }, alarme5_evt = { alarme5_evt }, evento1_log = { evento1_log },"
-                    " evento2_log = { evento2_log }, evento3_log = { evento3_log } WEHRE id = { id }")
-        self.connection.commit()
-        pass
-
-    def get_devguid(self, guid):
-        logger.info(f"SELECT guid, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log, alarme2_evt,"
-                    " alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log, alarme4_evt, alarme5_tme,"
-                    " alarme5_log, alarme5_evt, evento1_log, evento2_log, evento3_log"
-                    " FROM device WHERE guid =  {guid});")
-        self.query.execute("SELECT guid, alarme1_tme, alarme1_log, alarme1_evt, alarme2_tme, alarme2_log,"
-                           " alarme2_evt, alarme3_tme, alarme3_log, alarme3_evt, alarme4_tme, alarme4_log,"
-                           " alarme4_evt, alarme5_tme, alarme5_log, alarme5_evt, evento1_log, evento2_log,"
-                           " evento3_log FROM device WHERE guid = ?;", ((guid, )))
-        return self.query.fetchone()
-
-    def get_devlog(self, guid):
-        logger.info(f"SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM device WHERE guid =  {guid});")
-        self.query.execute("SELECT acompanhando_id, evento1_log, evento2_log, evento3_log FROM device WHERE guid = ?;", ((guid, )))
-        return self.query.fetchone()
-      
     ##################################################################################################
 
     def get_events(self):
@@ -248,13 +219,13 @@ class Database():
             logger.info(f"SELECT id, patient_id, name, start_shift, end_shift FROM caregiver;")
             return self.query.fetchall()
         else:
-            patient_id = self.get_pateint_id_from_user_id(user_id)
+            patient_id = self.get_patient_id_from_user_id(user_id)
 
             self.query.execute(f"SELECT id, patient_id, name, start_shift, end_shift FROM caregiver WHERE patient_id = {patient_id};")
             logger.info(f"SELECT id, patient_id, name, start_shift, end_shift FROM caregiver WHERE patient_id = {patient_id};")
             return self.query.fetchall()
         
-    def get_pateint_id_from_user_id(self, user_id):
+    def get_patient_id_from_user_id(self, user_id):
         self.query.execute(f"SELECT id FROM patient WHERE user_id = {user_id};")
         logger.info(f"SELECT id FROM patient WHERE user_id = {user_id};")
         return self.query.fetchone()[0]
@@ -283,7 +254,7 @@ class Database():
             logger.info(f"SELECT id, user_id, nome, guid FROM alarm;")
             return self.query.fetchall()
         else:
-            patient_id = self.get_pateint_id_from_user_id(user_id)
+            patient_id = self.get_patient_id_from_user_id(user_id)
 
             self.query.execute(f"SELECT id, patient_id, event_id, alarm_time from alarm WHERE patient_id ={patient_id};")
             logger.info(f"SELECT id, patient_id, event_id, alarm_time from alarm WHERE patient_id ={patient_id};")
