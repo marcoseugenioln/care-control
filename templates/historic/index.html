@@ -13,13 +13,23 @@
         <table>
             <tr>
                 <td><label class="text-field">ID</label></td>
+                {% if is_admin %}
+                    <td><label class="text-field">Paciente</label></td>
+                {% endif %}
                 <td><label class="text-field">Data e Hora</label></td>
-                <td><label class="text-field">Mensagem</label></td>
+                <td><label class="text-field">Evento</label></td>
+                <td><label class="text-field">Tipo</label></td>
             </tr>
-            {% for id, datan, logi in logs %}
-                <td><label class="text-field">{{ id }}</label></td>
-                <td><label class="text-field">{{ datan }}</label></td>
-                <td><label class="text-field">{{ logi }}</label></td>
+            {% for id, patient_id, event_id, log_datetime, log_type in historic %}
+                <tr>
+                    <td><label class="text-field">{{ id }}</label></td>
+                    {% if is_admin %}
+                        <td><label class="text-field">{{ get_patient_name(patient_id) }}</label></td>
+                    {% endif %}
+                    <td><label class="text-field">{{ log_datetime }}</label></td>
+                    <td><label class="text-field">{{ get_event_description(event_id) }}</label></td>
+                    <td><label class="text-field">{{ get_log_type(log_type) }}</label></td>
+                </tr>
             {% endfor %}
         </table>
     </div>

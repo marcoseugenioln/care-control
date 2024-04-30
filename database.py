@@ -134,6 +134,33 @@ class Database():
             return True
         else:
             return False
+        
+    def get_button_event_id(self, device_id, button_id):
+        if button_id == 1:
+            self.query.execute(f"SELECT event_button_1 FROM device WHERE id = {device_id};")
+            logger.info(f"SELECT event_button_1 FROM device WHERE id = {device_id};")
+            event_id = self.query.fetchone()[0]
+            return event_id
+        elif button_id == 2:
+            self.query.execute(f"SELECT event_button_2 FROM device WHERE id = {device_id};")
+            logger.info(f"SELECT event_button_2 FROM device WHERE id = {device_id};")
+            event_id = self.query.fetchone()[0]
+            return event_id
+        elif button_id == 3:
+            self.query.execute(f"SELECT event_button_3 FROM device WHERE id = {device_id};")
+            logger.info(f"SELECT event_button_3 FROM device WHERE id = {device_id};")
+            event_id = self.query.fetchone()[0]
+            return event_id
+        else:
+            return 0
+
+    def get_patient_by_device_id(self, device_id):
+        self.query.execute(f"SELECT patient_id FROM device WHERE id = {device_id};")
+        logger.info(f"SELECT patient_id FROM device WHERE id = {device_id};")
+        patient_id = self.query.fetchone()[0]
+        return patient_id
+
+
     ##################################################################################################
 
     def get_patient(self, is_admin, user_id):
@@ -146,6 +173,12 @@ class Database():
             logger.info(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
             return self.query.fetchall()
 
+    def get_patient_name(self, patient_id):
+        logger.info(f"SELECT name FROM patient WHERE id = {patient_id};")
+        self.query.execute(f"SELECT name FROM patient WHERE id = {patient_id};")
+        patient_name = self.query.fetchone()[0]
+        return patient_name
+    
     def has_patient(self, user_id):
         self.query.execute(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
         logger.info(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
@@ -176,18 +209,22 @@ class Database():
         
     def get_historic(self, is_admin, user_id):
         if bool(is_admin):
-            self.query.execute("SELECT id, patient_id, log_datetime, log_message FROM historic;")
-            logger.info("SELECT id, patient_id, log_datetime, log_message FROM historic;")
+            self.query.execute(f"SELECT id, patient_id, event_id, log_datetime, log_type FROM historic;")
+            logger.info(f"SELECT id, patient_id, event_id, log_datetime, log_type FROM historic;")
             return self.query.fetchall()
         else:
             patient_id = self.get_patient_id_from_user_id(user_id)
 
-            self.query.execute(f"SELECT id, patient_id, log_datetime, log_message FROM historic WHERE patient_id = {patient_id};")
-            logger.info(f"SELECT id, patient_id, log_datetime, log_message FROM patient WHERE patient_id = {patient_id};")
+            self.query.execute(f"SELECT id, patient_id, event_id, log_datetime, log_type FROM historic WHERE patient_id = {patient_id};")
+            logger.info(f"SELECT id, patient_id, event_id, log_datetime, log_type FROM historic WHERE patient_id = {patient_id};")
             return self.query.fetchall()
         
-    def log_message(self):
-        logger.info("log message")
+    def log_message(self, patient_id, event_id, log_type):
+        logger.info(f"INSERT INTO historic(patient_id, event_id, log_datetime, log_type) values ({patient_id}, {event_id}, DATETIME('now'), {log_type});")
+        self.query.execute(f"INSERT INTO historic(patient_id, event_id, log_datetime, log_type) values ({patient_id}, {event_id}, DATETIME('now'), {log_type});")
+        self.connection.commit()
+
+        return True
 
     ##################################################################################################
 
@@ -195,6 +232,12 @@ class Database():
         self.query.execute("SELECT id, description, is_input FROM event;")
         logger.info("SELECT id, description, is_input FROM event;")
         return self.query.fetchall()
+    
+    def get_event_description(self, event_id):
+        logger.info(f"SELECT description FROM event WHERE id = {event_id};")
+        self.query.execute(f"SELECT description FROM event WHERE id = {event_id};")
+        description = self.query.fetchone()[0]
+        return description
     
     def insert_event(self, event_description, is_input_event):
         self.query.execute(f"INSERT OR IGNORE INTO event(description, is_input) values ('{event_description}', {is_input_event});")
@@ -228,7 +271,9 @@ class Database():
     def get_patient_id_from_user_id(self, user_id):
         self.query.execute(f"SELECT id FROM patient WHERE user_id = {user_id};")
         logger.info(f"SELECT id FROM patient WHERE user_id = {user_id};")
-        return self.query.fetchone()[0]
+
+        patient_id = self.query.fetchone()[0]
+        return patient_id
         
     def insert_caregiver(self, patient_id, name, start_shift, end_shift) -> bool:
         self.query.execute(f"INSERT OR IGNORE INTO caregiver(patient_id, name, start_shift, end_shift) values ({patient_id}, '{name}', TIME('{start_shift}'), TIME('{end_shift}'));")
