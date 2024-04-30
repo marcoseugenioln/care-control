@@ -13,6 +13,20 @@ site = Blueprint('site', __name__, template_folder='templates')
 
 database = Database()
 
+LOG_TYPE_INPUT     = 0
+LOG_TYPE_ALARM_ON  = 1
+LOG_TYPE_ALARM_OFF = 2
+
+def get_log_type(type_id):
+    if type_id == 0:
+        return "Registro"
+    elif type_id == 1:
+        return "Alarme Ligado"
+    elif type_id == 2:
+        return "Alarme Desligado"
+    else:
+        return ""
+
 @app.route("/")
 def index():
     if 'logged_in' in session:
@@ -246,6 +260,7 @@ def update_caregiver(id):
             patient_id = database.get_patient_id_from_user_id(session['user_id'])
 
         database.update_caregiver(
+            id,
             patient_id,
             request.form['name'],
             request.form['start_shift'],
@@ -357,10 +372,26 @@ def update_device(id):
         )
     return redirect(url_for('device'))
 
-@app.route('/device/data/<guid>', methods=['GET', 'POST'])
-def device_data(guid):
-    logger.info("Acquiring device data")
-    
+@app.route('/device/input/<device_id>/<button_id>', methods=['GET', 'POST'])
+def device_input(device_id, button_id):
+
+    patient_id = database.get_patient_by_device_id(device_id)
+    logger.info("patient_id: " + str(patient_id))
+
+    button_event_id = database.get_button_event_id(device_id, int(button_id))
+    logger.info("button_event_id: " + str(button_event_id))
+
+    database.log_message(patient_id, button_event_id, LOG_TYPE_INPUT)
+
+    return redirect(url_for('historic'))
+
+@app.route('/device/alarm-on/<device_id>', methods=['GET', 'POST'])
+def device_alarm_on(device_id):
+    logger.info("alarm on")
+
+@app.route('/device/alarm-off/<device_id>', methods=['GET', 'POST'])
+def device_alarm_off(device_id):
+    logger.info("alarm off")
 ##################################################################################################
 
 @app.route('/historic', methods=['GET', 'POST'])
@@ -368,6 +399,11 @@ def historic():
 
     return render_template(
         'historic/index.html',
+        user_id=session['user_id'],
+        is_admin=session['is_admin'],
+        get_patient_name=database.get_patient_name,
+        get_event_description=database.get_event_description,
+        get_log_type=get_log_type,
         historic=database.get_historic(session['is_admin'], session['user_id'])
     )
 

@@ -52,8 +52,9 @@ CREATE TABLE IF NOT EXISTS event (
 CREATE TABLE IF NOT EXISTS historic (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	patient_id INTEGER,
+	event_id INTEGER,
     log_datetime DATETIME,
-	log_message TEXT(300),
+	log_type INTEGER,
 	FOREIGN KEY (patient_id) REFERENCES patient(id) ON DELETE CASCADE
 );
 
