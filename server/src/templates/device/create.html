@@ -1,0 +1,30 @@
+<div class="create-div">
+    <table>
+        <tr>
+            <h1>Cadastrar Dispositivo</h1>
+            <form action="{{ url_for('create_device') }}" method="post">
+
+                <td><input type="text" class="text-field" name="name" value="{{ name }}"></td>
+
+                {% if is_admin %}
+                    <td><select class="combo-box" name="patient_id">
+                        {% for pid, pname, birth in patients %}
+                            {% if pid == patient_id %}
+                                <option value="{{ pid }}" selected>{{ pname }}</option>
+                            {% else %}
+                                <option value="{{ pid }}">{{ pname }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select></td>
+                {% endif %}
+
+                <td>
+                    <button class="action-btn">
+                        <img src="{{ url_for('static', filename='image/create-icon.png')}}" class="action-btn-img" id="create-btn">
+                    </button>
+                </td>
+
+            </form>
+        </tr>
+    </table>
+</div>

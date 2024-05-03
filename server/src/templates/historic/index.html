@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <title>Historico</title>
+</head>
+ 
+<body>
+    {% include 'header/index.html'%}
+    
+    {% if is_admin %}
+        <form method="get" action="{{ url_for('delete_all_historic') }}">
+            <button class="action-btn">
+                <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
+            </button>
+        </form>
+    {% else %}
+        <form method="get" action="{{ url_for('delete_historic', patient_id=get_patient_id_from_user_id(user_id) )}}">
+            <button class="action-btn">
+                <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
+            </button>
+        </form>
+    {% endif %}
+    
+
+    <div class="index-div">
+        <table>
+            <tr>
+                <td><label class="text-field">ID</label></td>
+                {% if is_admin %}
+                    <td><label class="text-field">Paciente</label></td>
+                {% endif %}
+                <td><label class="text-field">Data e Hora</label></td>
+                <td><label class="text-field">Evento</label></td>
+                <td><label class="text-field">Tipo</label></td>
+            </tr>
+            {% for id, patient_id, event_id, log_datetime, log_type in historic %}
+                <tr>
+                    <td><label class="text-field">{{ id }}</label></td>
+                    {% if is_admin %}
+                        <td><label class="text-field">{{ get_patient_name(patient_id) }}</label></td>
+                    {% endif %}
+                    <td><label class="text-field">{{ log_datetime }}</label></td>
+                    <td><label class="text-field">{{ get_event_description(event_id) }}</label></td>
+                    <td><label class="text-field">{{ get_log_type(log_type) }}</label></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+ 
+</html>

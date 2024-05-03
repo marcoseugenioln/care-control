@@ -1,111 +1,149 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <ArduinoJson.h>
 
-const int guid = 1;
+#include "button.h"
+#include "WifiConnection.h"
+#include "IntApp.h"
+#include "Led.h"
 
-const char* ssid = "NICOLE_E_MARCOS";
-const char* password = "Dv010400";
+// pin leds
+#define PIN_LED_ALARM 23
+#define PIN_LED_WIFI 22
+#define PIN_LED_EVENT_1 21
+#define PIN_LED_EVENT_2 19
+#define PIN_LED_EVENT_3 18
 
-int pin_led_wifi = 22;
+// pin buzzer
+#define PIN_BUZZER 2
 
-HTTPClient http;
-int httpCode;
+// pin buttons
+#define PIN_BUTTON_ALARM 13
+#define PIN_BUTTON_EVENT_1 21
+#define PIN_BUTTON_EVENT_2 19
+#define PIN_BUTTON_EVENT_3 18
 
-void connect_to_wifi()
-{
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+// auxiliar data
+#define ALARM_FREQUENCE 250
+#define DEVICE_ID 1
+#define NO_ALARM 0
+#define SSID "NICOLE_E_MARCOS"
+#define PASS "Dv010400"
+#define HOST "http://192.168.1.7:3000/"
 
-  while(WiFi.status() != WL_CONNECTED)
-  {
-    digitalWrite(pin_led_wifi, HIGH);
-    delay(1000);
-    digitalWrite(pin_led_wifi, LOW);
-  }
+// leds objects
+Led wifi_led(PIN_LED_WIFI);
+Led alarm_led(PIN_LED_ALARM);
+Led button_led_1(PIN_LED_EVENT_1);
+Led button_led_2(PIN_LED_EVENT_2);
+Led button_led_3(PIN_LED_EVENT_3);
 
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    digitalWrite(pin_led_wifi, HIGH);
-  }
-}
+// button objects
+Button button_alarm(PIN_BUTTON_ALARM);
+Button button_event_1(PIN_BUTTON_EVENT_1);
+Button button_event_2(PIN_BUTTON_EVENT_2);
+Button button_event_3(PIN_BUTTON_EVENT_3);
 
-void check_wifi_connection()
-{
-  // check wifi connection 
-  if (WiFi.status() != WL_CONNECTED)
-  {
-    digitalWrite(pin_led_wifi, LOW);
+// wifi connection class
+WifiConnection wifi(String(SSID), String(PASS));
 
-    // try to connect again if necessary
-    connect_to_wifi();
-  }
-}
+// interface with web application
+IntApp intapp(String(HOST), DEVICE_ID);
 
-void request_device_data()
-{
-  http.begin("http://192.168.1.7:3000/device/data/" + guid);
-  httpCode = http.GET();
-
-  if (httpCode > 0) 
-  {
-    StaticJsonDocument<200> device_data;
-
-    String payload = http.getString();
-    
-    char device_data_json[payload.length()];
-
-    payload.toCharArray(device_data_json, payload.length());
-
-    // Deserialize the JSON document
-    DeserializationError error = deserializeJson(device_data, device_data_json);
-
-    // Test if parsing succeeds.
-    if (error) 
-    {
-      Serial.print(F("deserializeJson() failed: "));
-      Serial.println(error.f_str());
-      return;
-    }
-
-    
-  }
-}
-
-void trigger_alarm()
-{
-  if(/* current time matches one of the alarms by a margin */ false)
-  {
-    /* activate buzzer and led */
-
-    while(/* alarm button not hit */ false)
-  	{
-      continue;
-    }
-
-    /* deactivate buzzer and led */
-  }
-}
+unsigned long last_millis;
+int alarm_id;
 
 /****************************************************************************************************************/
 void setup() 
 {
-  // set wifi led pin
-  pinMode(pin_led_wifi, OUTPUT);
-
   // init serial communication
   Serial.begin(9600);
   delay(1000);
 
+  Serial.println("Starting device components");
+  button_alarm.begin();
+  button_event_1.begin();
+  button_event_2.begin();
+  button_event_3.begin();
+  alarm_led.begin();
+  wifi_led.begin();
+  button_led_1.begin();
+  button_led_2.begin();
+  button_led_3.begin();
+  //alarm_buzzer.begin();
+  pinMode(PIN_BUZZER, OUTPUT);
+
+  Serial.println("Starting wifi connection");
+  
   // start wifi connection
-  connect_to_wifi();
+  wifi.connect();
+
+  if (wifi.isConnected())
+  {
+    wifi_led.on();
+  }
 }
 /****************************************************************************************************************/
 void loop() 
 {
-  check_wifi_connection();
+  // check wifi connection 
+  if (!wifi.isConnected())
+  {
+    // turn wifi led off
+    wifi_led.off();
 
-  request_device_data();
+    // try to connect again if necessary
+    wifi.connect();
 
-  trigger_alarm();
+    // turn led on again
+    wifi_led.on();
+  }
+
+
+  // perform alarm check every minute
+  if (millis() - last_millis >= 2*1000UL) 
+  {
+    // turn alarm led on
+    alarm_led.on();
+
+    // prepare for next iteration
+    last_millis = millis(); 
+
+    // obtain alarm info from server
+    alarm_id = intapp.triggerAlarm();
+
+    // check if alarm should be triggered
+    if (alarm_id != NO_ALARM)
+    {
+      Serial.println("sending alarm on request.");
+      intapp.alarmOn(alarm_id);
+
+      Serial.println("ringing buzzer.");
+      tone(PIN_BUZZER, ALARM_FREQUENCE);
+      
+      Serial.println("wating for button clicked.");
+      while(!button_alarm.isReleased()){ continue; }
+      Serial.println("button clicked.");
+
+      Serial.println("sending alarm off request.");
+      intapp.alarmOff(alarm_id);
+      noTone(PIN_BUZZER);
+    }
+    
+    // turn alarm led off
+    alarm_led.off();
+  }
+
+  // check if event button was clicked
+  if (button_event_1.isReleased())
+  {
+    intapp.logEvent(1);
+  }
+
+  if (button_event_2.isReleased())
+  {
+    intapp.logEvent(2);
+  }
+
+  if (button_event_3.isReleased())
+  {
+    intapp.logEvent(3);
+  }
 }
