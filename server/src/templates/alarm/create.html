@@ -1,0 +1,39 @@
+<div class="create-div">
+    <hr>
+    <h3>Inserir Cuidador</h3>
+    <table>
+        <tr>
+            <form action="{{ url_for('create_alarm') }}" method="post">
+
+                <td><select class="combo-box" name="event_id">
+                    {% for eid, description, is_input in events %}
+                        {% if not is_input %}
+                            {% if eid == event_id %}
+                                <option value="{{ eid }}" selected>{{ description }}</option>
+                            {% else %}
+                                <option value="{{ eid }}">{{ description }}</option>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </select></td>
+
+                <td><input type="time" class="text-field" name="alarm_time"></td>
+
+                {% if is_admin %}
+                    <td><select class="combo-box" name="patient_id">
+                        {% for id, name, birth in patients %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select></td>
+                {% endif %}
+        
+                <td>
+                    <button class="action-btn">
+                        <img src="{{ url_for('static', filename='image/create-icon.png')}}" class="action-btn-img" id="create-btn">
+                    </button>
+                </td>
+            </form>
+        </tr>
+    </table>
+</div>
+

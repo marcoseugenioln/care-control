@@ -1,0 +1,53 @@
+<tr>
+    <form action="{{ url_for('delete_user', id=id) }}" method="post">
+
+        <td><label>{{ id }}</label></td>
+
+        <td><input type="text" class="text-field" name="email" value="{{ email }}"></td>
+        <td><input type="password" class="text-field" name="new_password" value="password"></td>
+
+        {% if is_admin %}
+            <td>
+                <select class="combo-box" name="is_admin">
+                    {% if get_admin(id) %}
+                        <option value="0">Usuário</option>
+                        <option value="1" selected>Administrador</option>
+                    {% else %}
+                        <option value="0" selected>Usuário</option>
+                        <option value="1">Administrador</option>
+                    {% endif %}
+                </select>
+            </td>
+        {% else %}
+            <input name="is_admin" type="hidden" value="0"></label>
+
+            <td>
+                <select class="combo-box" disabled>
+                    <option value="0" selected>Usuário</option>
+                </select>
+            </td>
+        {% endif %}
+
+        <!-- <td><input type="submit" class="btn" value="Atualizar"></td> -->
+
+        <td>
+            <button class="action-btn">
+                <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
+            </button>
+        </td>
+    </form>
+
+    {% if is_admin %}
+        <form method="get" action="{{ url_for('delete_user', id=id) }}">
+            <td>
+                <button class="action-btn">
+                    <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
+                </button>
+            </td>
+        </form>
+        
+        <!-- <form action="/user/delete/{{ id }}" method="post">
+            <td><input type="submit" class="btn" value="Apagar"></td>
+        </form> -->
+    {% endif %}
+</tr>
