@@ -16,9 +16,9 @@
 
 // pin buttons
 #define PIN_BUTTON_ALARM 13
-#define PIN_BUTTON_EVENT_1 21
-#define PIN_BUTTON_EVENT_2 19
-#define PIN_BUTTON_EVENT_3 18
+#define PIN_BUTTON_EVENT_1 12
+#define PIN_BUTTON_EVENT_2 14
+#define PIN_BUTTON_EVENT_3 27
 
 // auxiliar data
 #define ALARM_FREQUENCE 250
@@ -57,7 +57,6 @@ void setup()
   Serial.begin(9600);
   delay(1000);
 
-  Serial.println("Starting device components");
   button_alarm.begin();
   button_event_1.begin();
   button_event_2.begin();
@@ -67,11 +66,38 @@ void setup()
   button_led_1.begin();
   button_led_2.begin();
   button_led_3.begin();
-  //alarm_buzzer.begin();
   pinMode(PIN_BUZZER, OUTPUT);
 
-  Serial.println("Starting wifi connection");
-  
+  xTaskCreatePinnedToCore (
+    loopButton1,     // Function to implement the task
+    "loopButton1",   // Name of the task
+    3000,      // Stack size in words
+    NULL,      // Task input parameter
+    0,         // Priority of the task
+    NULL,      // Task handle.
+    0          // Core where the task should run
+  );
+
+  xTaskCreatePinnedToCore (
+    loopButton2,     // Function to implement the task
+    "loopButton2",   // Name of the task
+    3000,      // Stack size in words
+    NULL,      // Task input parameter
+    0,         // Priority of the task
+    NULL,      // Task handle.
+    0          // Core where the task should run
+  );
+
+  xTaskCreatePinnedToCore (
+    loopButton3,     // Function to implement the task
+    "loopButton3",   // Name of the task
+    3000,      // Stack size in words
+    NULL,      // Task input parameter
+    0,         // Priority of the task
+    NULL,      // Task handle.
+    0          // Core where the task should run
+  );
+
   // start wifi connection
   wifi.connect();
 
@@ -96,7 +122,6 @@ void loop()
     wifi_led.on();
   }
 
-
   // perform alarm check every minute
   if (millis() - last_millis >= 2*1000UL) 
   {
@@ -112,17 +137,12 @@ void loop()
     // check if alarm should be triggered
     if (alarm_id != NO_ALARM)
     {
-      Serial.println("sending alarm on request.");
       intapp.alarmOn(alarm_id);
 
-      Serial.println("ringing buzzer.");
       tone(PIN_BUZZER, ALARM_FREQUENCE);
       
-      Serial.println("wating for button clicked.");
       while(!button_alarm.isReleased()){ continue; }
-      Serial.println("button clicked.");
 
-      Serial.println("sending alarm off request.");
       intapp.alarmOff(alarm_id);
       noTone(PIN_BUZZER);
     }
@@ -130,20 +150,44 @@ void loop()
     // turn alarm led off
     alarm_led.off();
   }
+}
 
-  // check if event button was clicked
-  if (button_event_1.isReleased())
+// the loop2 function also runs forver but as a parallel task
+void loopButton1 (void* pvParameters) 
+{
+  while (1) 
   {
+    // check if event button was clicked
+    while (!button_event_1.isReleased()){ continue; }
+
+    button_led_1.on();
     intapp.logEvent(1);
+    button_led_1.off();
   }
+}
 
-  if (button_event_2.isReleased())
+void loopButton2 (void* pvParameters) 
+{
+  while (1) 
   {
+    // check if event button was clicked
+    while (!button_event_2.isReleased()){ continue; }
+
+    button_led_2.on();
     intapp.logEvent(2);
+    button_led_2.off();
   }
+}
 
-  if (button_event_3.isReleased())
+void loopButton3 (void* pvParameters) 
+{
+  while (1) 
   {
+    // check if event button was clicked
+    while (!button_event_3.isReleased()){ continue; }
+
+    button_led_3.on();
     intapp.logEvent(3);
+    button_led_3.off();
   }
 }
