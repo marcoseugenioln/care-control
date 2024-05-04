@@ -1,0 +1,1 @@
+python -m unittest discover -s server.test -p "*_test.py"

@@ -1,8 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template, Blueprint, flash, session, abort, jsonify
 from flask import Flask
 from database import Database
-from datetime import datetime, timedelta, time
+#from datetime import datetime, timedelta, time
 import logging
+import json
 
 logger = logging.getLogger('werkzeug')
 handler = logging.FileHandler('site-log.log')
@@ -474,8 +475,9 @@ def delete_all_historic():
 
 if __name__ == '__main__':
 
-    DEBUG   = True
-    HOST_IP = "192.168.1.7"
-    PORT    = 3000
+    # Opening JSON file
+    config_file = open('config.json')
+    config = json.load(config_file)
+    config_file.close()
 
-    app.run(host=HOST_IP, port=PORT, debug=DEBUG)
+    app.run(host=config["host"], port=config["port"], debug=config["debug"])
