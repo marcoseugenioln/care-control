@@ -342,11 +342,15 @@ class Database():
 
     def get_next_alarm(self, device_id):
         patient_id = self.get_patient_by_device_id(device_id)
-        self.query.execute(f"SELECT id FROM alarm WHERE patient_id = {patient_id} AND alarm_time > TIME('now', 'localtime') ORDER BY alarm_time LIMIT 1;")
-        logger.info(f"SELECT id FROM alarm WHERE patient_id = {patient_id} AND alarm_time > TIME('now', 'localtime') ORDER BY alarm_time LIMIT 1;")
+        self.query.execute(f"SELECT id FROM alarm WHERE patient_id = {patient_id} AND alarm_time >= TIME('now', 'localtime') ORDER BY alarm_time ASC LIMIT 1;")
+        logger.info(f"SELECT id FROM alarm WHERE patient_id = {patient_id} AND alarm_time >= TIME('now', 'localtime') ORDER BY alarm_time ASC LIMIT 1;")
 
-        alarm_id = self.query.fetchone()[0]
-        return alarm_id
+        alarm_id = self.query.fetchone()
+
+        if alarm_id:
+            return alarm_id[0]
+        else:
+            return "0"
     
     def get_alarm_time(self, alarm_id):
         self.query.execute(f"SELECT alarm_time FROM alarm WHERE id = {alarm_id};")

@@ -85,9 +85,9 @@ INSERT OR IGNORE INTO user (email, password, is_admin) VALUES
 ('user@user.com', 'user', 0);
 
 INSERT OR IGNORE INTO event (description, is_input) VALUES
-('Micção', 1),
-('Defecação', 1),
-('Aspiração de tráqueo', 1),
+('Paciente urinou', 1),
+('Paciente defecou', 1),
+('Troca de curativo', 1),
 ('Drenagem', 1),
 ('Paciente Adormeceu', 1),
 ('Paciente Acordou', 1),

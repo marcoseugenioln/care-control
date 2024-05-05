@@ -134,3 +134,33 @@
     height: 22px;
     padding: 1px;
 }
+
+.menu-btn{
+    background-color:mediumblue;
+    color:aliceblue;
+    width:fit-content;
+    height:fit-content;
+    margin:10px;
+    border-style: none;
+    border-radius: 5px;
+}
+
+.menu-btn:active {
+    background-color: mediumblue;
+    transform: translateY(1px);
+    transform: translateX(1px);
+}
+
+.menu-btn:hover{
+    background-color:deepskyblue;
+}
+
+.menu-btn-img{
+    width: 28px; 
+    height: 28px;
+    padding: 5px;
+}
+
+input#events-btn{
+    background: #ccc url('image/event-icon.png') no-repeat top left;
+}
