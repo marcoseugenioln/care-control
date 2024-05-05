@@ -123,7 +123,7 @@ void loop()
   }
 
   // perform alarm check every minute
-  if (millis() - last_millis >= 2*1000UL) 
+  if (millis() - last_millis >= 60*1000UL) 
   {
     // turn alarm led on
     alarm_led.on();

@@ -1,7 +1,8 @@
 from selenium import webdriver  
-from selenium.webdriver.edge.service import Service as EdgeService  
 import unittest
 import json
+import os
+from selenium.webdriver.common.by import By
 
 class AuthTest(unittest.TestCase):
 
@@ -11,12 +12,27 @@ class AuthTest(unittest.TestCase):
         config = json.load(config_file)
         config_file.close()
 
-        with webdriver.Edge() as driver:
+        xpath_file = open(os.path.realpath(os.path.dirname(__file__)) + '\\xpath.json')
+        xpath = json.load(xpath_file)
+        xpath_file.close()
+
+        with webdriver.Chrome() as driver:
+
+            driver.switch_to.window(driver.current_window_handle)
+
+            driver.maximize_window()
+
             address = "http://"+config["host"]+":"+str(config["port"])
-            print(address)
+
             driver.get(address)
-            print(driver.title)
+
+            assert len(driver.window_handles) == 1
+
             self.assertTrue(driver.title == "Login")
+
+            driver.find_element(By.NAME, "register_button")
+
+            self.assertTrue(driver.title == "Registrar-se")
 
 if __name__ == '__main__':
     unittest.main()

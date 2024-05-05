@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template, Blueprint, flash, session, abort, jsonify
 from flask import Flask
 from database import Database
-#from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time
 import logging
 import json
 
@@ -21,20 +21,20 @@ LOG_TYPE_ALARM_OFF = 2
 
 alarm_test = []
 
+def is_on_time(time):
+    now = datetime.now()
+    local_now = now.astimezone()
+    current_hour = local_now.hour
+    current_minute = local_now.minute
 
-# def is_time_between(begin_time, end_time, check_time=None):
-#     # If check time is not given, default to current UTC time
-#     check_time = check_time or datetime.utcnow().time()
-#     if begin_time < end_time:
-#         return check_time >= begin_time and check_time <= end_time
-#     else: # crosses midnight
-#         return check_time >= begin_time or check_time <= end_time
-    
-# def is_on_time(time):
-#     time_offset = 1
-#     now_time = datetime.utcnow().time()
-#     alarm_time = datetime.strptime(time, '%H:%M:%S')
-#     return is_time_between(now_time + timedelta(minutes=time_offset*(-1)), now_time + timedelta(minutes=time_offset), alarm_time)
+    alarm_time = datetime.strptime(time, '%H:%M:%S')
+    alarm_hour = alarm_time.hour
+    alarm_minute = alarm_time.minute
+
+    logger.info(f"current time: {current_hour}:{current_minute}")
+    logger.info(f"alarm time: {alarm_hour}:{alarm_minute}")
+
+    return alarm_hour == current_hour and alarm_minute - 1 == current_minute
 
 def get_log_type(type_id):
     if type_id == 0:
@@ -436,9 +436,9 @@ def trigger_alarm(device_id):
             return str(alarm_id)
         else:
             alarm_test.remove(device_id)
-    # else:
-    #     if int(alarm_id) > 0 and is_on_time(database.get_alarm_time(alarm_id)):
-    #         return alarm_id
+    else:
+        if int(alarm_id) > 0 and is_on_time(database.get_alarm_time(alarm_id)):
+            return str(alarm_id)
 
     return "0"
 
