@@ -1,0 +1,57 @@
+TABLE user {
+	id integer [primary key]
+	email text(300)
+	password text(64)
+	is_admin integer
+}
+TABLE caregiver {
+	id integer [primary key]
+	patient_id integer
+	name text(120)
+
+	start_shift time
+	end_shift time
+}
+TABLE patient {
+	id INTEGER [primary key]
+	user_id INTEGER
+  name TEXT(120) 
+  birth DATE
+}
+TABLE alarm {
+	id INTEGER [primary key]
+	patient_id INTEGER
+	event_id INTEGER
+	alarm_time TIME
+}
+TABLE event {
+	id INTEGER [primary key]
+	description TEXT(120)
+	is_input INTEGER
+}
+TABLE historic {
+	id INTEGER [primary key]
+	patient_id INTEGER
+	event_id INTEGER
+  log_datetime DATETIME
+	log_type INTEGER
+}
+TABLE device {
+	id integer
+	patient_id INTEGER
+	name TEXT(100)
+	event_button_1 integer
+	event_button_2 INTEGER
+	event_button_3 INTEGER
+}
+
+Ref: patient.(id) < caregiver.(patient_id)
+Ref: patient.(id) - device.(patient_id)
+Ref: patient.(id) < alarm.(patient_id)
+Ref: patient.(id) < historic.(patient_id)
+Ref: event.(id) - device.(event_button_1)
+Ref: event.(id) - device.(event_button_2)
+Ref: event.(id) - device.(event_button_3)
+Ref: event.(id) < historic.(event_id)
+Ref: event.(id) < alarm.(event_id)
+Ref: user.(id) - patient.(user_id)
