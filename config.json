@@ -1,5 +1,8 @@
 {
-    "host" : "192.168.1.7",
+    "host" : "192.168.1.6",
     "port" : 3000,
-    "debug"  : true
+    "debug"  : false,
+    "schema" : "server/src/schema.sql",
+    "database" : "server/src/schema.db",
+    "log_file" : "site-log.log"
 }

@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS device (
 
 INSERT OR IGNORE INTO user (email, password, is_admin) VALUES
 ('root@root.com', 'root', 1),
-('marcos@root.com', 'root', 1),
 ('user@user.com', 'user', 0);
 
 INSERT OR IGNORE INTO event (description, is_input) VALUES

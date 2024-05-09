@@ -1,19 +1,25 @@
 from flask import Flask, redirect, url_for, request, render_template, Blueprint, flash, session, abort, jsonify
 from flask import Flask
 from database import Database
-from datetime import datetime, timedelta, time
+from datetime import datetime
 import logging
 import json
-
-logger = logging.getLogger('werkzeug')
-handler = logging.FileHandler('site-log.log')
-logger.addHandler(handler)
+import sys
 
 app = Flask(__name__)
 app.secret_key = '1234'
 site = Blueprint('site', __name__, template_folder='templates')
 
-database = Database()
+with open(str(sys.argv[1])) as config_file:
+    config = json.load(config_file)
+
+logger = logging.getLogger('werkzeug')
+
+handler = logging.FileHandler(config["log_file"])
+
+logger.addHandler(handler)
+
+database = Database(database_path=config["database"], schema_file=config["schema"])
 
 LOG_TYPE_INPUT     = 0
 LOG_TYPE_ALARM_ON  = 1
@@ -474,10 +480,7 @@ def delete_all_historic():
     return redirect(url_for('historic'))
 
 if __name__ == '__main__':
-
-    # Opening JSON file
-    config_file = open('config.json')
-    config = json.load(config_file)
-    config_file.close()
-
-    app.run(host=config["host"], port=config["port"], debug=config["debug"])
+    print(config)
+    app.run(host=config["host"], 
+            port=config["port"], 
+            debug=config["debug"])

@@ -3,23 +3,21 @@ import logging
 import os
 
 logger = logging.getLogger('werkzeug')
-handler = logging.FileHandler('site-log.log')
-logger.addHandler(handler)
 
 class Database():
 
-    def __init__(self, name='schema', root_dir=os.path.realpath(os.path.dirname(__file__)), read_sql_file=True):
-
-        database_name = root_dir + "\\" + name + ".db"
-        database_schema = root_dir + "\\" + name + ".sql"
+    def __init__(self, 
+                 database_path="schema.db", 
+                 schema_file="schema.sql",
+                 read_sql_file=True):
 
         logger.info('starting database connection')
-        self.connection = sqlite3.connect(database_name, check_same_thread=False, timeout=10)
+        self.connection = sqlite3.connect(database_path, check_same_thread=False, timeout=10)
         self.query = self.connection.cursor()
         logger.info('Database connected.')
 
         if read_sql_file:
-            with open(database_schema, 'r') as sql_file:
+            with open(schema_file, 'r') as sql_file:
                 sql_script = sql_file.read()
 
             self.query.executescript(sql_script)
