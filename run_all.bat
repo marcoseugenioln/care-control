@@ -1,8 +1,10 @@
-start "webapp" run_app test_config.json /B
+@echo off
 
-echo "Runnning all tests"
+start "webapp" run_app config-test.json /B
 
-python -m unittest discover -s server.test -p "*_test.py"
+
+python -m unittest discover -s server.test -p auth_test.py
+python -m unittest discover -s server.test -p home_test.py
 
 set "PID="
 for /f "tokens=2" %%A in ('tasklist /FI "WINDOWTITLE eq webapp*" /FI "Status eq Running" 2^>NUL') do @Set "PID=%%A"

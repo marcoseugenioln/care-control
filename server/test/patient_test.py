@@ -25,8 +25,6 @@ class AuthTest(unittest.TestCase):
             driver.find_element(By.NAME, "login-button").click()
             self.assertTrue(driver.title == "Página Inicial")
 
-
-
 if __name__ == '__main__':
     unittest.main()
 

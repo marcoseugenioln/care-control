@@ -38,8 +38,11 @@ class Database():
     def get_user_id(self, email: str, password: str):
         logger.info(f"SELECT id FROM user WHERE email == '{email}' AND password == '{password}';")
         self.query.execute(f"SELECT id FROM user WHERE email == '{email}' AND password == '{password}';")
-        user_id = self.query.fetchone()[0]   
-        return user_id
+        user_id = self.query.fetchone()
+        if user_id:   
+            return user_id[0]
+        else:
+            return str(0)
 
     def get_admin(self, user_id):
         logger.info(f"SELECT is_admin FROM user WHERE id == {user_id};")
@@ -60,14 +63,20 @@ class Database():
     def get_user_email(self, user_id: int) -> str:
         self.query.execute(f"SELECT email FROM user WHERE id == {user_id}")
         logger.info(f"SELECT email FROM user WHERE id == {user_id}")
-        email = self.query.fetchone()[0]
-        return email
+        email = self.query.fetchone()
+        if email:
+            return email[0]
+        else:
+            return ""
 
     def get_user_password(self, user_id: int) -> str:
         self.query.execute(f"SELECT password FROM user WHERE id == {user_id}")
         logger.info(f"SELECT password FROM user WHERE id == {user_id}")
-        password = self.query.fetchone()[0]
-        return password
+        password = self.query.fetchone()
+        if password:
+            return password[0]
+        else:
+            return ""
     
     def get_users(self):
         self.query.execute(f"SELECT id, email, password FROM user")
@@ -141,32 +150,38 @@ class Database():
         if button_id == 1:
             self.query.execute(f"SELECT event_button_1 FROM device WHERE id = {device_id};")
             logger.info(f"SELECT event_button_1 FROM device WHERE id = {device_id};")
-            event_id = self.query.fetchone()[0]
-            return event_id
         elif button_id == 2:
             self.query.execute(f"SELECT event_button_2 FROM device WHERE id = {device_id};")
             logger.info(f"SELECT event_button_2 FROM device WHERE id = {device_id};")
-            event_id = self.query.fetchone()[0]
-            return event_id
         elif button_id == 3:
             self.query.execute(f"SELECT event_button_3 FROM device WHERE id = {device_id};")
             logger.info(f"SELECT event_button_3 FROM device WHERE id = {device_id};")
-            event_id = self.query.fetchone()[0]
-            return event_id
         else:
-            return 0
+            return str(0)
+        
+        event_id = self.query.fetchone()
+        if event_id:
+            return event_id[0]
+        else:
+            return str(0)
         
     def get_alarm_event_id(self, alarm_id):
         self.query.execute(f"SELECT event_id FROM alarm WHERE id = {alarm_id};")
         logger.info(f"SELECT event_id FROM alarm WHERE id = {alarm_id};")
-        event_id = self.query.fetchone()[0]
-        return event_id
+        event_id = self.query.fetchone()
+        if event_id:
+            return event_id[0]
+        else:
+            return str(0)
 
     def get_patient_by_device_id(self, device_id):
         self.query.execute(f"SELECT patient_id FROM device WHERE id = {device_id};")
         logger.info(f"SELECT patient_id FROM device WHERE id = {device_id};")
-        patient_id = self.query.fetchone()[0]
-        return patient_id
+        patient_id = self.query.fetchone()
+        if patient_id:
+            return patient_id
+        else:
+            return str(0)
 
     ##################################################################################################
 
@@ -183,8 +198,11 @@ class Database():
     def get_patient_name(self, patient_id):
         logger.info(f"SELECT name FROM patient WHERE id = {patient_id};")
         self.query.execute(f"SELECT name FROM patient WHERE id = {patient_id};")
-        patient_name = self.query.fetchone()[0]
-        return patient_name
+        patient_name = self.query.fetchone()
+        if patient_name:
+            return patient_name[0]
+        else:
+            return ""
     
     def has_patient(self, user_id):
         self.query.execute(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
@@ -253,8 +271,12 @@ class Database():
     def get_event_description(self, event_id):
         logger.info(f"SELECT description FROM event WHERE id = {event_id};")
         self.query.execute(f"SELECT description FROM event WHERE id = {event_id};")
-        description = self.query.fetchone()[0]
-        return description
+
+        description = self.query.fetchone()
+        if description:
+            return description[0]
+        else:
+            return ""
     
     def insert_event(self, event_description, is_input_event):
         self.query.execute(f"INSERT OR IGNORE INTO event(description, is_input) values ('{event_description}', {is_input_event});")
@@ -289,8 +311,11 @@ class Database():
         self.query.execute(f"SELECT id FROM patient WHERE user_id = {user_id};")
         logger.info(f"SELECT id FROM patient WHERE user_id = {user_id};")
 
-        patient_id = self.query.fetchone()[0]
-        return patient_id
+        patient_id = self.query.fetchone()
+        if patient_id:
+            return patient_id[0]
+        else:
+            return str(0)
         
     def insert_caregiver(self, patient_id, name, start_shift, end_shift) -> bool:
         self.query.execute(f"INSERT OR IGNORE INTO caregiver(patient_id, name, start_shift, end_shift) values ({patient_id}, '{name}', TIME('{start_shift}'), TIME('{end_shift}'));")
@@ -348,11 +373,14 @@ class Database():
         if alarm_id:
             return alarm_id[0]
         else:
-            return "0"
+            return str(0)
     
     def get_alarm_time(self, alarm_id):
         self.query.execute(f"SELECT alarm_time FROM alarm WHERE id = {alarm_id};")
         logger.info(f"SELECT alarm_time FROM alarm WHERE id = {alarm_id};")
 
-        alarm_id = self.query.fetchone()[0]
-        return alarm_id
+        alarm_id = self.query.fetchone()
+        if alarm_id:
+            return alarm_id[0]
+        else:
+            return str(0)
