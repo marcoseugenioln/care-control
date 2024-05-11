@@ -1,23 +1,26 @@
-<tr>
-    <form action="{{ url_for('update_patient', id=id) }}" method="post">
-        
-        <td><label>{{ id }}</label></td>
+<div name="patient-{{ id }}">
+    <tr>
+        <form action="{{ url_for('update_patient', id=id) }}" method="post">
+            
+            <td><label>{{ id }}</label></td>
+    
+            <td><input type="text" class="text-field" name="patient_name" value="{{ patient_name }}"></td>
+            <td><input type="date" class="text-field" name="birth_date" value="{{ birth_date }}"/></td>
+            
+            <td>
+                <button class="action-btn" name="update-patient-{{ id }}">
+                    <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
+                </button>
+            </td>
+            
+        </form>
+        <form action="{{ url_for('delete_patient', id=id) }}" method="post">
+            <td>
+                <button class="action-btn" name="delete-patient-{{ id }}">
+                    <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
+                </button>
+            </td>
+        </form>
+    </tr>
 
-        <td><input type="text" class="text-field" name="patient_name" value="{{ patient_name }}"></td>
-        <td><input type="date" class="text-field" name="birth_date" value="{{ birth_date }}"/></td>
-        
-        <td>
-            <button class="action-btn">
-                <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
-            </button>
-        </td>
-        
-    </form>
-    <form action="{{ url_for('delete_patient', id=id) }}" method="post">
-        <td>
-            <button class="action-btn">
-                <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
-            </button>
-        </td>
-    </form>
-</tr>
+</div>

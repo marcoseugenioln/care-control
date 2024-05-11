@@ -1,32 +1,34 @@
-<tr>
-    <form action="{{ url_for('update_event', id=id) }}" method="post">
-        <td><label>{{ id }}</label></td>
-
-        <td><input type="text" class="text-field" name="event_description" value="{{ event_description }}"></td>
-
-        <td>
-            <select class="combo-box" name="is_input_event">
-                {% if is_input_event ==1 %}
-                    <option value="0">Alarme</option>
-                    <option value="1" selected>Registro</option>
-                {% else %}
-                    <option value="0" selected>Alarme</option>
-                    <option value="1">Registro</option>
-                {% endif %}
-            </select>
-        </td>
-        <td>
-            <button class="action-btn">
-                <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
-            </button>
-        </td>
-    </form>
-
-    <form action="{{ url_for('delete_event', id=id) }}" method="post">
-        <td>
-            <button class="action-btn">
-                <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
-            </button>
-        </td>
-    </form>
-</tr>
+<div name="event-{{ id }}">
+    <tr>
+        <form action="{{ url_for('update_event', id=id) }}" method="post">
+            <td><label>{{ id }}</label></td>
+    
+            <td><input type="text" class="text-field" name="event_description" value="{{ event_description }}"></td>
+    
+            <td>
+                <select class="combo-box" name="is_input_event">
+                    {% if is_input_event == 1 %}
+                        <option value="0">Alarme</option>
+                        <option value="1" selected>Registro</option>
+                    {% else %}
+                        <option value="0" selected>Alarme</option>
+                        <option value="1">Registro</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td>
+                <button class="action-btn">
+                    <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
+                </button>
+            </td>
+        </form>
+    
+        <form action="{{ url_for('delete_event', id=id) }}" method="post">
+            <td>
+                <button class="action-btn">
+                    <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
+                </button>
+            </td>
+        </form>
+    </tr>
+</div>

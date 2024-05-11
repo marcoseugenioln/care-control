@@ -179,7 +179,7 @@ class Database():
         logger.info(f"SELECT patient_id FROM device WHERE id = {device_id};")
         patient_id = self.query.fetchone()
         if patient_id:
-            return patient_id
+            return patient_id[0]
         else:
             return str(0)
 
@@ -194,7 +194,7 @@ class Database():
             self.query.execute(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
             logger.info(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
             return self.query.fetchall()
-
+    
     def get_patient_name(self, patient_id):
         logger.info(f"SELECT name FROM patient WHERE id = {patient_id};")
         self.query.execute(f"SELECT name FROM patient WHERE id = {patient_id};")
@@ -202,9 +202,9 @@ class Database():
         if patient_name:
             return patient_name[0]
         else:
-            return ""
+            return str()
     
-    def has_patient(self, user_id):
+    def has_patient(self, user_id : int) -> bool:
         self.query.execute(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
         logger.info(f"SELECT id, name, birth FROM patient WHERE user_id = {user_id};")
 
@@ -276,7 +276,7 @@ class Database():
         if description:
             return description[0]
         else:
-            return ""
+            return str()
     
     def insert_event(self, event_description, is_input_event):
         self.query.execute(f"INSERT OR IGNORE INTO event(description, is_input) values ('{event_description}', {is_input_event});")
