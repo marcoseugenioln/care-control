@@ -3,61 +3,56 @@ import unittest
 import json
 from selenium.webdriver.common.by import By
 from ..src.database import Database
+from .base_test import BaseTest
 
-class HomeTest(unittest.TestCase):
+class HomeTest(BaseTest):
 
     def test_home(self):
-        # Opening JSON file
-        with open('config-test.json') as config_file:
-            config = json.load(config_file)
 
-        database = Database(database_path=config["database"], read_sql_file=False)
+        self.driver.switch_to.window(self.driver.current_window_handle)
+        self.driver.maximize_window()
+        address = "http://"+self.host+":"+str(self.port)
+        self.driver.get(address)
+        self.assertTrue(len(self.driver.window_handles) == 1)
 
-        with webdriver.Chrome() as driver:
-            driver.switch_to.window(driver.current_window_handle)
-            driver.maximize_window()
-            address = "http://"+config["host"]+":"+str(config["port"])
-            driver.get(address)
-            self.assertTrue(len(driver.window_handles) == 1)
+        self.assertTrue(self.driver.title == "Login")
+        self.driver.find_element(By.NAME, "email").send_keys("user@user.com")
+        self.driver.find_element(By.NAME, "password").send_keys("user")
+        self.driver.find_element(By.NAME, "login-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            self.assertTrue(driver.title == "Login")
-            driver.find_element(By.NAME, "email").send_keys("user@user.com")
-            driver.find_element(By.NAME, "password").send_keys("user")
-            driver.find_element(By.NAME, "login-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "event-button").click()
+        self.assertEqual(self.driver.title, "Eventos")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "event-button").click()
-            self.assertEqual(driver.title, "Eventos")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "alarm-button").click()
+        self.assertEqual(self.driver.title, "Alarmes")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "alarm-button").click()
-            self.assertEqual(driver.title, "Alarmes")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "caregiver-button").click()
+        self.assertEqual(self.driver.title, "Cuidadores")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "caregiver-button").click()
-            self.assertEqual(driver.title, "Cuidadores")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "patient-button").click()
+        self.assertEqual(self.driver.title, "Paciente")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "patient-button").click()
-            self.assertEqual(driver.title, "Paciente")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "user-button").click()
+        self.assertEqual(self.driver.title, "Usuário")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "user-button").click()
-            self.assertEqual(driver.title, "Usuário")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
+        self.driver.find_element(By.NAME, "historic-button").click()
+        self.assertEqual(self.driver.title, "Historico")
+        self.driver.find_element(By.NAME, "home-button").click()
+        self.assertEqual(self.driver.title, "Página Inicial")
 
-            driver.find_element(By.NAME, "historic-button").click()
-            self.assertEqual(driver.title, "Historico")
-            driver.find_element(By.NAME, "home-button").click()
-            self.assertEqual(driver.title, "Página Inicial")
-
-            driver.find_element(By.NAME, "logout-button").click()
-            self.assertEqual(driver.title, "Login")
+        self.driver.find_element(By.NAME, "logout-button").click()
+        self.assertEqual(self.driver.title, "Login")
 
 if __name__ == '__main__':
     unittest.main()

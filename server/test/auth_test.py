@@ -1,37 +1,42 @@
-from selenium import webdriver  
-import unittest
-import json
+from .base_test import BaseTest
 from selenium.webdriver.common.by import By
-from ..src.database import Database
+import unittest
+import time
 
-class AuthTest(unittest.TestCase):
+class AuthTest(BaseTest):
 
     def test_auth(self):
-        # Opening JSON file
-        with open('config-test.json') as config_file:
-            config = json.load(config_file)
 
-        database = Database(database_path=config["database"], read_sql_file=False)
+        user     = "user"
+        password = "user"
 
-        with webdriver.Chrome() as driver:
-            driver.switch_to.window(driver.current_window_handle)
-            driver.maximize_window()
-            address = "http://"+config["host"]+":"+str(config["port"])
-            driver.get(address)
-            self.assertTrue(len(driver.window_handles) == 1)
-            self.assertTrue(driver.title == "Login")
-            driver.find_element(By.NAME, "register-button").click()
-            self.assertTrue(driver.title == "Registrar-se")
-            driver.find_element(By.NAME, "email").send_keys("user")
-            driver.find_element(By.NAME, "new_password").send_keys("user")
-            driver.find_element(By.NAME, "c_password").send_keys("user")
-            driver.find_element(By.NAME, "create-button").click()
-            self.assertTrue(database.user_exists("user", "user"))
-            self.assertTrue(driver.title == "Login")
-            driver.find_element(By.NAME, "email").send_keys("user")
-            driver.find_element(By.NAME, "password").send_keys("user")
-            driver.find_element(By.NAME, "login-button").click()
-            self.assertTrue(driver.title == "Página Inicial")
+        self.database.delete_user(self.database.get_user_id(user, password))
+
+        self.driver.switch_to.window(self.driver.current_window_handle)
+        self.driver.maximize_window()
+
+        address = "http://"+self.host+":"+str(self.port)
+        self.driver.get(address)
+
+        self.assertTrue(len(self.driver.window_handles) == 1)
+        self.assertTrue(self.driver.title == "Login")
+
+        self.driver.find_element(By.NAME, "register-button").click()
+        self.assertTrue(self.driver.title == "Registrar-se")
+
+        self.driver.find_element(By.NAME, "email").send_keys(user)
+        self.driver.find_element(By.NAME, "new_password").send_keys(password)
+        self.driver.find_element(By.NAME, "c_password").send_keys(password)
+        self.driver.find_element(By.NAME, "create-button").click()
+        self.assertTrue(self.database.user_exists(user, password))
+
+        self.assertTrue(self.driver.title == "Login")
+        self.driver.find_element(By.NAME, "email").send_keys(user)
+        self.driver.find_element(By.NAME, "password").send_keys(password)
+        self.driver.find_element(By.NAME, "login-button").click()
+        self.assertTrue(self.driver.title == "Página Inicial")
+        self.database.delete_user(self.database.get_user_id(user, password))
+
 
 
 

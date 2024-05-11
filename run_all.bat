@@ -2,7 +2,6 @@
 
 start "webapp" run_app config-test.json /B
 
-
 python -m unittest discover -s server.test -p auth_test.py
 python -m unittest discover -s server.test -p home_test.py
 
