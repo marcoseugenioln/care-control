@@ -3,12 +3,12 @@
         <form action="{{ url_for('update_caregiver', id=id) }}" method="post">
     
             <td><label>{{ id }}</label></td>
-            <td><input type="text" class="text-field" name="name" value="{{ name }}"></td>
-            <td><input type="time" class="text-field" name="start_shift" value="{{ start_shift }}"></td>
-            <td><input type="time" class="text-field" name="end_shift" value="{{ end_shift }}"></td>
+            <td><input id="name-{{ id }}" type="text" class="text-field" name="name" value="{{ name }}"></td>
+            <td><input id="start-shift-{{ id }}" type="time" class="text-field" name="start_shift" value="{{ start_shift }}"></td>
+            <td><input id="end-shift-{{ id }}"type="time" class="text-field" name="end_shift" value="{{ end_shift }}"></td>
     
             {% if is_admin %}
-                <td><select class="combo-box" name="patient_id">
+                <td><select id="patient-id-{{ id }}" class="combo-box" name="patient_id">
                     {% for pid, pname, birth in patients %}
                         {% if pid == patient_id %}
                             <option value="{{ pid }}" selected>{{ pname }}</option>
@@ -20,7 +20,7 @@
             {% endif %}
             
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="update-caregiver-{{ id }}">
                     <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
                 </button>
             </td>
@@ -29,7 +29,7 @@
     
         <form action="{{ url_for('delete_caregiver', id=id) }}" method="post">
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="delete-caregiver-{{ id }}">
                     <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
                 </button>
             </td>

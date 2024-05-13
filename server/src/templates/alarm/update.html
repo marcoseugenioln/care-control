@@ -1,10 +1,10 @@
-<dev name="alarm-{{ id }}">
+<div name="alarm-{{ id }}">
     <tr>
         <form action="{{ url_for('update_alarm', id=id) }}" method="post">
     
             <td><label>{{ id }}</label></td>
     
-            <td><select class="combo-box" name="event_id">
+            <td><select id="event-id-{{ id }}" class="combo-box" name="event_id">
                 {% for eid, description, is_input in events %}
                     {% if not is_input %}
                         {% if eid == event_id %}
@@ -16,10 +16,10 @@
                 {% endfor %}
             </select></td>
     
-            <td><input type="time" class="text-field" name="alarm_time" value="{{ alarm_time }}"></td>
+            <td><input id="alarm-time-{{ id }}" type="time" class="text-field" name="alarm_time" value="{{ alarm_time }}"></td>
     
             {% if is_admin %}
-                <td><select class="combo-box" name="patient_id">
+                <td><select id="patient-id-{{ id }}" class="combo-box" name="patient_id">
                     {% for pid, pname, birth in patients %}
                         {% if pid == patient_id %}
                             <option value="{{ pid }}" selected>{{ pname }}</option>
@@ -31,7 +31,7 @@
             {% endif %}
             
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="update-alarm-{{ id }}">
                     <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
                 </button>
             </td>
@@ -39,11 +39,11 @@
     
         <form action="{{ url_for('delete_alarm', id=id) }}" method="post">
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="delete-alarm-{{ id }}">
                     <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
                 </button>
             </td>
         </form>
     
     </tr>
-</dev>
+</div>

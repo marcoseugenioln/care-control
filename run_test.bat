@@ -10,3 +10,6 @@ for /f "tokens=2" %%A in ('tasklist /FI "WINDOWTITLE eq webapp*" /FI "Status eq 
 if defined PID taskkill /F /PID %PID%
 for /f "tokens=2" %%A in ('tasklist /FI "WINDOWTITLE eq webapp*" /FI "Status eq Running" 2^>NUL') do @Set "PID=%%A"
 if defined PID taskkill /F /PID %PID%
+
+timeout 1
+del test.db

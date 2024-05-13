@@ -3,10 +3,10 @@
         <form action="{{ url_for('update_device', id=id) }}" method="post">
             <td><label>{{ id }}</label></td>
     
-            <td><input type="text" class="text-field" name="name" value="{{ name }}"></td>
+            <td><input id="name-{{ id }}" type="text" class="text-field" name="name" value="{{ name }}"></td>
     
             {% if is_admin %}
-                <td><select class="combo-box" name="patient_id">
+                <td><select id="patient-id-{{ id }}" class="combo-box" name="patient_id">
                     {% for pid, pname, birth in patients %}
                         {% if pid == patient_id %}
                             <option value="{{ pid }}" selected>{{ pname }}</option>
@@ -17,7 +17,7 @@
                 </select></td>
             {% endif %}
     
-            <td><select class="combo-box" name="event_button_1">
+            <td><select id="button-1-{{ id }}" class="combo-box" name="event_button_1">
                 {% for eid, description, is_input in events %}
                     {% if is_input %}
                         {% if eid == event_button_1 %}
@@ -29,7 +29,7 @@
                 {% endfor %}
             </select></td>
     
-            <td><select class="combo-box" name="event_button_2">
+            <td><select id="button-2-{{ id }}" class="combo-box" name="event_button_2">
                 {% for eid, description, is_input in events %}
                     {% if is_input %}
                         {% if eid == event_button_2 %}
@@ -41,7 +41,7 @@
                 {% endfor %}
             </select></td>
     
-            <td><select class="combo-box" name="event_button_3">
+            <td><select id="button-3-{{ id }}" class="combo-box" name="event_button_3">
                 {% for eid, description, is_input in events %}
                     {% if is_input %}
                         {% if eid == event_button_3 %}
@@ -54,14 +54,14 @@
             </select></td>
     
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="update-device-{{ id }}">
                     <img src="{{ url_for('static', filename='image/edit-icon.png')}}" class="action-btn-img">
                 </button>
             </td>
         </form>
         <form action="{{ url_for('delete_device', id=id) }}" method="post">
             <td>
-                <button class="action-btn">
+                <button class="action-btn" name="delete-device-{{ id }}">
                     <img src="{{ url_for('static', filename='image/trash-icon.png')}}" class="action-btn-img">
                 </button>
             </td>
