@@ -1,15 +1,11 @@
-### Python download: https://www.python.org/downloads/
-### Git download: https://git-scm.com/downloads
 
 ### Instalando ambiente
-
-- Instalar Python
-
-- Instalar Git
+- Instalar [Python](https://www.python.org/downloads/)
+- Instalar [Git](https://git-scm.com/downloads)
 
 - Abrir o prompt de comando e clonar o repositório usando o comando:
 ```bash
-    git clone https://github.com/marcoseugenioln/construction-company-stock.git
+    git clone https://github.com/marcoseugenioln/care-control.git
 ```
 
 - Abrir o prompt de comando na pasta do repositório e executar o comando:
@@ -18,44 +14,54 @@
 ```
 
 ### Executando Aplicação
-- Abrir o terminal na pasta do repositório
-- Executar o comando:
+- no arquivo `config.json` sao mantidas as configuracoes
+```json
+    {
+        "host" : "192.168.1.6", -> ip do computador que vai hospedar a aplicacao
+        "port" : 3000, -> porta a ser usado
+        "debug"  : false, -> modo debug do flask
+        "schema" : "server/src/schema.sql", -> schema do banco de dados
+        "database" : "server/src/schema.db", -> arquivo do banco de dados
+        "log_file" : "site-log.log" -> arquivo de log
+    }
+```
+- Abrir o terminal na pasta do repositório e executar o comando:
 ```bash
-    python index.py
+   run_test config.json
 ```
 
-- Abrir o navegador e inserir  a url http://localhost:5000/
+- Abrir o navegador e inserir  a url http://`host`:`port`/ como configurado
 
 ## GIT
 Dicas de como usar o git:
 
 ### Clonar o repositorio (dowload para trabalho)
-```
-git clone https://github.com/marcoseugenioln/construction-company-stock.git
+```bash
+    git clone https://github.com/marcoseugenioln/care-control.git
 ```
 
 ### Criando a area de trabalho pessoal
-```
-git branch troque_pelo_seu_nome
-git checkout troque_pelo_seu_nome
+```bash
+    git branch <nome_do_branch>
+    git checkout <nome_do_branch>
 ```
 ### Adicionando conteúdo
 
 ### Listar o que mudou
 ```
-git status 
+    git status 
 ```
-### Listar o que mudou
+### Adicionar mudanca
 ```
-git add arquivo_Untracked
+    git add <nome_do_arquivo>
 ```
 
 ### Salvar trabalho local
 ```
-git commit -a -m "Esplicação do que mudou"
+    git commit -a -m "Esplicação do que mudou"
 ```
 ### Salvar na github
 Precisa ser cadastrado como contribuinte do projeto
 ```
-git push -u troque_pelo_seu_nome troque_pelo_seu_nome  
+    git push
 ```
