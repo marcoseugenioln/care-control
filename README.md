@@ -48,20 +48,20 @@ Dicas de como usar o git:
 ### Adicionando conteúdo
 
 ### Listar o que mudou
-```
+```bash
     git status 
 ```
 ### Adicionar mudanca
-```
+```bash
     git add <nome_do_arquivo>
 ```
 
 ### Salvar trabalho local
-```
+```bash
     git commit -a -m "Esplicação do que mudou"
 ```
 ### Salvar na github
 Precisa ser cadastrado como contribuinte do projeto
-```
+```bash
     git push
 ```
